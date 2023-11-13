@@ -1,4 +1,4 @@
-export enum resourse_genres {
+export enum genres {
   "Action",
   "Romance",
   "Comedy",
