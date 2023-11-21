@@ -16,20 +16,12 @@ const routes = [
         component: () => import("@/views/Home.vue"),
       },
       {
-        path: "test",
-        name: "test",
+        path: "singup",
+        name: "singup",
         // route level code-splitting
         // this generates a separate chunk (Home-[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () => import("@/views/test.vue"),
-      },
-      {
-        path: "login",
-        name: "login",
-        // route level code-splitting
-        // this generates a separate chunk (Home-[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import("@/views/test.vue"),
+        component: () => import("@/views/SingUp.vue"),
       },
     ],
   },
@@ -45,7 +37,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const publicPages = ["/login", "/"];
+  const publicPages = ["/login", "/", "/singup"];
   const authRequiered = !publicPages.includes(to.path);
   const loggedIn = localStorage.getItem("user");
   if (authRequiered && !loggedIn) {
