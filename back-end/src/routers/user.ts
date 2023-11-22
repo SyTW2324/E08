@@ -6,6 +6,8 @@ export const userRouter = express.Router();
 // Adds an user
 userRouter.post("/users", async (req, res) => {
   try {
+    console.log("Trying to post user");
+    console.log(req.body);
     // Adds the user to the database
     const user = new User({
       ...req.body,
@@ -15,6 +17,7 @@ userRouter.post("/users", async (req, res) => {
     // Sends the result to the client
     return res.status(201).send(user);
   } catch (error) {
+    console.log(error);
     return res.status(500).send(error);
   }
 });
@@ -23,7 +26,7 @@ userRouter.post("/users", async (req, res) => {
 userRouter.get("/users", async (req, res) => {
   try {
     // Gets users from the database
-    const filter = req.query.name ? { name: req.query.name } : {};
+    const filter = req.query.name ? { full_name: req.query.name } : {};
     const users = await User.find(filter);
 
     // Sends the result to the client
@@ -76,7 +79,7 @@ userRouter.patch("/users", async (req, res) => {
     // Checks if elements from body exist and get previous info
 
     // Finds the users by name
-    const users = await User.find({ name: req.query.name.toString() });
+    const users = await User.find({ full_name: req.query.name.toString() });
     if (users.length !== 0) {
       const updatedUsers: UserDocumentInterface[] = [];
       for (let index = 0; index < users.length; index++) {
@@ -154,7 +157,7 @@ userRouter.delete("/users", async (req, res) => {
     }
 
     // Finds the users by name
-    const users = await User.find({ name: req.query.name.toString() });
+    const users = await User.find({ full_name: req.query.name.toString() });
     if (users.length !== 0) {
       for (let i = 0; i < users.length; i++) {
         // Deletes an user

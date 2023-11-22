@@ -23,7 +23,7 @@ const UserSchema = new Schema<UserDocumentInterface>({
     type: String,
     required: true,
     validate: (value: string) => {
-      if (/^[a-z.-]+@[a-z.-]+\.[a-z]+$/.test(value)) {
+      if (!/^[a-z.-]+@[a-z.-]+\.[a-z]+$/.test(value)) {
         throw new Error("Not a valid mail");
       }
     },
