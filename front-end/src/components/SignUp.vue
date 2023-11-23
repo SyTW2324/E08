@@ -1,6 +1,6 @@
 <template>
   <v-card class="mx-auto mt-5" max-width="400" outlined>
-    <v-card-title class="text-h5">Sing up</v-card-title>
+    <v-card-title class="text-h5">sign up</v-card-title>
 
     <v-card-text>
       <form @submit.prevent="submit">
@@ -46,6 +46,7 @@
     </v-card-text>
   </v-card>
 </template>
+
 <script setup lang="ts">
 import axios from "axios";
 import { GenericObject, useField, useForm } from "vee-validate";
@@ -101,13 +102,12 @@ async function registerUser(user: string) {
     });
 
     if (response.status == 201) {
-      alert("Sing up succesfull");
+      alert("sign up succesfull");
     } else {
       console.log(response.data.message);
     }
   } catch (error) {
     console.error("Error on sign up:", error);
-    // Puedes manejar el error de alguna manera, como mostrando un mensaje al usuario.
   }
 }
 </script>

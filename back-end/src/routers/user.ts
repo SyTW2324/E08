@@ -16,7 +16,7 @@ userRouter.post("/users", async (req, res) => {
     console.log("Registered!");
     // Sends the result to the client
     return res.status(201).send({
-      messagge: "Sing up successful",
+      messagge: "sign up successful",
       code: 1,
     });
   } catch (error) {
