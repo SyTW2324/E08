@@ -12,9 +12,9 @@
         ></v-text-field>
 
         <v-text-field
-          v-model="user_name.value.value"
+          v-model="id.value.value"
           :counter="10"
-          :error-messages="user_name.errorMessage.value"
+          :error-messages="id.errorMessage.value"
           label="User Name"
         ></v-text-field>
 
@@ -57,7 +57,7 @@ const { handleSubmit, handleReset } = useForm({
 
       return "Name needs to be at least 2 characters.";
     },
-    user_name(value: string) {
+    id(value: string) {
       if (value?.length >= 2) return true;
 
       return "User Name needs to be at least 2 characters.";
@@ -79,7 +79,7 @@ const { handleSubmit, handleReset } = useForm({
 });
 const full_name = useField("full_name");
 
-const user_name = useField("user_name");
+const id = useField("id");
 
 const mail = useField("mail");
 
@@ -101,9 +101,8 @@ async function registerUser(user: string) {
     });
 
     if (response.status == 201) {
-      console.log("Sing up succesfull");
-    }
-    if (response.data.code == 0) {
+      alert("Sing up succesfull");
+    } else {
       console.log(response.data.message);
     }
   } catch (error) {

@@ -1,7 +1,7 @@
 import { Document, Schema, model } from "mongoose";
 
 export interface UserDocumentInterface extends Document {
-  user_name: string;
+  id: string;
   full_name: string;
   mail: string;
   birth_date: Date;
@@ -9,7 +9,7 @@ export interface UserDocumentInterface extends Document {
 }
 
 const UserSchema = new Schema<UserDocumentInterface>({
-  user_name: {
+  id: {
     type: String,
     unique: true,
     required: true,

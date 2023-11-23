@@ -3,9 +3,10 @@ import { User, UserDocumentInterface } from "../models/user.js";
 
 export const userRouter = express.Router();
 
-// Adds an user
+// Register a user
 userRouter.post("/users", async (req, res) => {
   try {
+    console.log(req.body);
     console.log("Trying to register user");
     // Adds the user to the database
     const user = new User({
@@ -19,33 +20,39 @@ userRouter.post("/users", async (req, res) => {
       code: 1,
     });
   } catch (error) {
+    console.log(error);
     return res
-      .status(205)
+      .status(406)
       .send({ message: "Try an other username", code: 0, error: error });
   }
 });
 
-// Gets users by name
+// Log in
 userRouter.get("/users", async (req, res) => {
   try {
-    // Gets users from the database
-    const userName = req.body.user_name;
-    const password = req.body.password;
+    console.log("Trying to log in");
+    console.log(req.query);
+    const userName = req.query.id;
+    const password = req.query.password;
 
     if (!userName || !password) {
-      res.status(400).send("Need username and password");
+      console.log("User or password not provided aborting");
+      return res.status(400).send("Need username and password");
     }
 
-    const user = await User.findOne({ user_name: userName });
+    const user = await User.findOne({ id: userName });
 
     // Sends the result to the client
     if (user && user.password == password) {
-      return res.send({ message: "Login successful", code: 1 });
+      console.log("Login successful");
+      return res.status(200).send({ message: "Login successful", code: 1 });
     }
+    console.log("Passwotd or ursename invald");
     return res
       .status(401)
       .send({ message: "Invalid username or password", code: 0 });
   } catch (error) {
+    console.log(error);
     return res.status(500).send(error);
   }
 });
