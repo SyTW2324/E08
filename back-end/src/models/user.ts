@@ -1,14 +1,15 @@
 import { Document, Schema, model } from "mongoose";
 
 export interface UserDocumentInterface extends Document {
-  id: string;
+  user_name: string;
   full_name: string;
   mail: string;
   birth_date: Date;
+  password: string;
 }
 
 const UserSchema = new Schema<UserDocumentInterface>({
-  id: {
+  user_name: {
     type: String,
     unique: true,
     required: true,
@@ -36,6 +37,10 @@ const UserSchema = new Schema<UserDocumentInterface>({
         throw new Error("Future date not permited");
       }
     },
+  },
+  password: {
+    type: String,
+    required: true,
   },
 });
 

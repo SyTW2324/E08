@@ -6,19 +6,22 @@ export const userRouter = express.Router();
 // Adds an user
 userRouter.post("/users", async (req, res) => {
   try {
-    console.log("Trying to post user");
-    console.log(req.body);
+    console.log("Trying to register user");
     // Adds the user to the database
     const user = new User({
       ...req.body,
     });
     await user.save();
-
+    console.log("Registered!");
     // Sends the result to the client
-    return res.status(201).send(user);
+    return res.status(201).send({
+      messagge: "Sing up successful",
+      code: 1,
+    });
   } catch (error) {
-    console.log(error);
-    return res.status(500).send(error);
+    return res
+      .status(205)
+      .send({ message: "Try an other username", code: 0, error: error });
   }
 });
 
@@ -26,36 +29,28 @@ userRouter.post("/users", async (req, res) => {
 userRouter.get("/users", async (req, res) => {
   try {
     // Gets users from the database
-    const filter = req.query.name ? { full_name: req.query.name } : {};
-    const users = await User.find(filter);
+    const userName = req.body.user_name;
+    const password = req.body.password;
+
+    if (!userName || !password) {
+      res.status(400).send("Need username and password");
+    }
+
+    const user = await User.findOne({ user_name: userName });
 
     // Sends the result to the client
-    if (users.length !== 0) {
-      return res.send(users);
+    if (user && user.password == password) {
+      return res.send({ message: "Login successful", code: 1 });
     }
-    return res.status(404).send();
+    return res
+      .status(401)
+      .send({ message: "Invalid username or password", code: 0 });
   } catch (error) {
     return res.status(500).send(error);
   }
 });
 
-// Gets user by ID
-userRouter.get("/users/:id", async (req, res) => {
-  try {
-    // Gets user from the database
-    const filter = req.params.id ? { id: req.params.id.toString() } : {};
-    const user = await User.findOne(filter);
-    // Sends the result to the client
-    if (user) {
-      return res.send(user);
-    }
-    return res.status(404).send();
-  } catch (error) {
-    return res.status(500).send(error);
-  }
-});
-
-// Updates users by name
+// Updates users by name NOT IMPLEMENTED JUST A TEMPLATE
 userRouter.patch("/users", async (req, res) => {
   try {
     if (!req.query.name) {
@@ -108,46 +103,7 @@ userRouter.patch("/users", async (req, res) => {
   }
 });
 
-// Updates user by ID
-userRouter.patch("/users/:id", async (req, res) => {
-  try {
-    // Checks if update is allowed
-    const allowedUpdates = ["name", "birth_date", "mail"];
-    const actualUpdates = Object.keys(req.body);
-    const isValidUpdate = actualUpdates.every((update) =>
-      allowedUpdates.includes(update)
-    );
-    if (!isValidUpdate) {
-      return res.status(400).send({
-        error: "Actualización no permitida",
-      });
-    }
-
-    // Updates the user
-    const userToUpdate = await User.findOne({ id: req.params.id.toString() });
-    const updatedUser = await User.findOneAndUpdate(
-      { id: req.params.id },
-      {
-        ...req.body,
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
-
-    // Updates the user information in the other collections
-    if (userToUpdate && updatedUser) {
-      // Sends the result to the client
-      return res.send(updatedUser);
-    }
-    return res.status(404).send();
-  } catch (error) {
-    return res.status(500).send(error);
-  }
-});
-
-// Deletes users by name
+// Deletes users by name NOT IMPLEMENTED JUST A TEMPLATE
 userRouter.delete("/users", async (req, res) => {
   try {
     if (!req.query.name) {
@@ -166,25 +122,6 @@ userRouter.delete("/users", async (req, res) => {
       }
       // Sends the result to the client
       return res.send(users);
-    }
-    return res.status(404).send();
-  } catch (error) {
-    return res.status(500).send(error);
-  }
-});
-
-// Deletes user by ID
-userRouter.delete("/users/:id", async (req, res) => {
-  try {
-    // Deletes the user
-    const deletedUser = await User.findOneAndDelete({
-      id: req.params.id.toString(),
-    });
-
-    if (deletedUser) {
-      // Deletes the user information in the other collections
-
-      return res.send(deletedUser);
     }
     return res.status(404).send();
   } catch (error) {
