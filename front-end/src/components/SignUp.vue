@@ -1,50 +1,57 @@
 <template>
-  <v-card class="mx-auto mt-5" max-width="400" outlined>
-    <v-card-title class="text-h5">sign up</v-card-title>
+  <v-app class="bg_image">
+    <v-card class="mx-auto mt-5" outlined>
+      <div class="d-flex flex-column align-center justify-center">
+        <v-img
+          src="@/assets/logo_libro.png"
+          :width="300"
+          contain
+          class="logo_pr"
+        ></v-img>
 
-    <v-card-text>
-      <form @submit.prevent="submit">
-        <v-text-field
-          v-model="full_name.value.value"
-          :counter="10"
-          :error-messages="full_name.errorMessage.value"
-          label="Full Name"
-        ></v-text-field>
+        <p>R&W</p>
+      </div>
+      <v-card-title class="text-h5">Sign up</v-card-title>
+      <p class="mx-auto ml-5">Hi there! Nice to meet you.</p>
 
-        <v-text-field
-          v-model="id.value.value"
-          :counter="10"
-          :error-messages="id.errorMessage.value"
-          label="User Name"
-        ></v-text-field>
+      <v-card-text>
+        <form @submit.prevent="submit">
+          <p class="mx-auto text-red">Full Name</p>
+          <v-text-field
+            v-model="full_name.value.value"
+            :counter="10"
+            :error-messages="full_name.errorMessage.value"
+          ></v-text-field>
+          <p class="mx-auto text-red">User Name</p>
+          <v-text-field
+            v-model="id.value.value"
+            :counter="10"
+            :error-messages="id.errorMessage.value"
+          ></v-text-field>
+          <p class="mx-auto text-red">Password</p>
+          <v-text-field
+            v-model="password.value.value"
+            type="password"
+            :error-messages="password.errorMessage.value"
+          ></v-text-field>
+          <p class="mx-auto text-red">E-mail</p>
+          <v-text-field
+            v-model="mail.value.value"
+            :error-messages="mail.errorMessage.value"
+            type="mail"
+          ></v-text-field>
+          <p class="mx-auto text-red">Birth Date</p>
+          <v-text-field
+            v-model="birth_date.value.value"
+            type="date"
+            :error-messages="birth_date.errorMessage.value"
+          ></v-text-field>
 
-        <v-text-field
-          v-model="password.value.value"
-          type="password"
-          :error-messages="password.errorMessage.value"
-          label="Password"
-        ></v-text-field>
-
-        <v-text-field
-          v-model="mail.value.value"
-          :error-messages="mail.errorMessage.value"
-          type="mail"
-          label="E-mail"
-        ></v-text-field>
-
-        <v-text-field
-          v-model="birth_date.value.value"
-          type="date"
-          :error-messages="birth_date.errorMessage.value"
-          label="Birth-Date"
-        ></v-text-field>
-
-        <v-btn class="me-4" type="submit"> submit </v-btn>
-
-        <v-btn @click="handleReset"> clear </v-btn>
-      </form>
-    </v-card-text>
-  </v-card>
+          <v-btn color="red" class="signup_btn" type="submit"> Sing up </v-btn>
+        </form>
+      </v-card-text>
+    </v-card>
+  </v-app>
 </template>
 
 <script setup lang="ts">
@@ -111,3 +118,19 @@ async function registerUser(user: string) {
   }
 }
 </script>
+
+<style scoped>
+.logo_pr {
+  max-width: 25%;
+  max-height: 25%;
+}
+
+.signup_btn {
+  width: 100%;
+}
+
+.bg_image {
+  background: url("@/assets/fondo_rojo.avif");
+  background-size: cover;
+}
+</style>

@@ -1,35 +1,48 @@
 <template>
-  <v-card class="mx-auto mt-5" max-width="400" outlined>
-    <v-card-title class="text-h5">Log In</v-card-title>
+  <v-app class="bg_image">
+    <v-card class="mx-auto mt-5" outlined>
+      <div class="d-flex flex-column align-center justify-center">
+        <v-img
+          src="@/assets/logo_libro.png"
+          :width="300"
+          contain
+          class="logo_pr"
+        ></v-img>
 
-    <v-card-text>
-      <form @submit.prevent="submit">
-        <v-text-field
-          v-model="id.value.value"
-          :error-messages="id.errorMessage.value"
-          label="User Name"
-        ></v-text-field>
+        <p>R&W</p>
+      </div>
 
-        <v-text-field
-          v-model="password.value.value"
-          type="password"
-          :error-messages="password.errorMessage.value"
-          label="Password"
-        ></v-text-field>
+      <v-card-title class="text-h5">Log In</v-card-title>
+      <p class="mx-auto ml-5">Hi there! Nice to see you again.</p>
 
-        <v-btn class="me-4" type="submit">Log In</v-btn>
+      <v-card-text>
+        <v-form @submit.prevent="submit">
+          <p class="mx-auto text-red">Username</p>
+          <v-text-field
+            v-model="id.value.value"
+            :error-messages="id.errorMessage.value"
+          ></v-text-field>
+          <p class="mx-auto text-red">Password</p>
+          <v-text-field
+            v-model="password.value.value"
+            type="password"
+            :error-messages="password.errorMessage.value"
+          ></v-text-field>
 
-        <v-btn @click="handleReset">Clear</v-btn>
-      </form>
-    </v-card-text>
-  </v-card>
+          <div class="d-flex justify-center">
+            <v-btn color="red" class="login_btn" type="submit">Log In</v-btn>
+          </div>
+        </v-form>
+      </v-card-text>
+    </v-card>
+  </v-app>
 </template>
 
 <script setup lang="ts">
 import axios from "axios";
 import { useField, useForm } from "vee-validate";
 
-const { handleSubmit, handleReset } = useForm({
+const { handleSubmit } = useForm({
   validationSchema: {
     id(value: string) {
       if (value?.length >= 2) return true;
@@ -40,7 +53,7 @@ const { handleSubmit, handleReset } = useForm({
     password(value: string) {
       if (value?.length >= 4) return true;
 
-      return "Password needs to be at least 6 characters.";
+      return "Password needs to be at least 4 characters.";
     },
   },
 });
@@ -55,7 +68,7 @@ const submit = handleSubmit(async (values) => {
 
 async function loginUser(id: string, password: string) {
   try {
-    const response = await axios.get("http://localhost:3002/login", {
+    const response = await axios.get("http://localhost:3002/users", {
       params: { id, password },
     });
 
@@ -69,3 +82,19 @@ async function loginUser(id: string, password: string) {
   }
 }
 </script>
+
+<style scoped>
+.logo_pr {
+  max-width: 25%;
+  max-height: 25%;
+}
+
+.login_btn {
+  width: 100%;
+}
+
+.bg_image {
+  background: url("@/assets/fondo_rojo.avif");
+  background-size: cover;
+}
+</style>
