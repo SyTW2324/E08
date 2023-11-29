@@ -3,8 +3,10 @@ import { User, UserDocumentInterface } from "../models/user.js";
 
 export const userRouter = express.Router();
 
+import jwt from "jsonwebtoken";
+
 // Register a user
-userRouter.post("/users", async (req, res) => {
+userRouter.post("/singup", async (req, res) => {
   try {
     console.log(req.body);
     console.log("Trying to register user");
@@ -28,15 +30,15 @@ userRouter.post("/users", async (req, res) => {
 });
 
 // Log in
-userRouter.get("/users", async (req, res) => {
+userRouter.post("/login", async (req, res) => {
   try {
     console.log("Trying to log in");
-    console.log(req.query);
-    const userName = req.query.id;
-    const password = req.query.password;
+    console.log(req.body);
+    const userName = req.body.id;
+    const password = req.body.password;
 
     if (!userName || !password) {
-      console.log("User or password not provided aborting");
+      console.log("User or password not provided, aborting");
       return res.status(400).send("Need username and password");
     }
 
@@ -44,13 +46,21 @@ userRouter.get("/users", async (req, res) => {
 
     // Sends the result to the client
     if (user && user.password == password) {
+      // User authenticated, generate JWT token
+      const token = jwt.sign({ id: user.id }, "1234", {
+        expiresIn: "1h",
+      });
+
       console.log("Login successful");
-      return res.status(200).send({ message: "Login successful", code: 1 });
+      return res
+        .status(200)
+        .json({ message: "Login successful", code: 1, token });
     }
-    console.log("Passwotd or ursename invald");
+
+    console.log("Password or username invalid");
     return res
       .status(401)
-      .send({ message: "Invalid username or password", code: 0 });
+      .json({ message: "Invalid username or password", code: 0 });
   } catch (error) {
     console.log(error);
     return res.status(500).send(error);
