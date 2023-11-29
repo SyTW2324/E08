@@ -8,17 +8,30 @@
       @click.stop="drawer = !drawer"
     ></v-app-bar-nav-icon>
     <v-btn
-      v-for="item in items"
+      v-if="!isAuthenticated()"
+      v-for="item in items_not_auth"
       :key="item.title"
       :to="item.route"
       class="nav-bar-btn hidden-sm-and-down"
     >
       {{ item.title }}
     </v-btn>
+
+    <v-btn
+      v-if="isAuthenticated()"
+      @click="logout()"
+      class="nav-bar-btn hidden-sm-and-down"
+    >
+      Logout
+    </v-btn>
   </v-app-bar>
   <v-navigation-drawer v-model="drawer" location="left" temporary>
     <v-list>
-      <v-list-item v-for="item in items" :key="item.title" :to="item.route">
+      <v-list-item
+        v-for="item in items_not_auth"
+        :key="item.title"
+        :to="item.route"
+      >
         <v-list-item-title>{{ item.title }}</v-list-item-title>
       </v-list-item>
     </v-list>
@@ -26,11 +39,16 @@
 </template>
 
 <script lang="ts">
-export default {
+import { defineComponent } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+export default defineComponent({
   data: () => ({
     drawer: false,
     group: null,
-    items: [
+    items_not_auth: [
       {
         title: "Home",
         route: "/",
@@ -45,7 +63,17 @@ export default {
       },
     ],
   }),
-};
+  methods: {
+    isAuthenticated() {
+      const token = localStorage.getItem("token");
+      if (token != null) return true;
+      return false;
+    },
+    logout() {
+      localStorage.removeItem("token");
+    },
+  },
+});
 </script>
 <style scoped>
 .nav-bar-title {

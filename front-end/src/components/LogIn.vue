@@ -41,6 +41,7 @@
 <script setup lang="ts">
 import axios from "axios";
 import { useField, useForm } from "vee-validate";
+import { useRouter } from "vue-router";
 
 const { handleSubmit } = useForm({
   validationSchema: {
@@ -61,6 +62,8 @@ const { handleSubmit } = useForm({
 const id = useField("id");
 const password = useField("password");
 
+const router = useRouter();
+
 const submit = handleSubmit(async (values) => {
   const { id, password } = values;
   await loginUser(id, password);
@@ -68,12 +71,25 @@ const submit = handleSubmit(async (values) => {
 
 async function loginUser(id: string, password: string) {
   try {
-    const response = await axios.get("http://localhost:3002/users", {
-      params: { id, password },
-    });
+    const response = await axios.post(
+      "http://localhost:3002/login",
+      {
+        id,
+        password,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (response.status === 200) {
+      const token = response.data.token;
+      localStorage.setItem("token", token);
+      localStorage.setItem("loged", "yes");
       alert("Log In successful");
+      router.push("/");
     } else {
       console.log(response.data.message);
     }

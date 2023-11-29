@@ -55,6 +55,7 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from "vue-router";
 import axios from "axios";
 import { GenericObject, useField, useForm } from "vee-validate";
 
@@ -93,6 +94,8 @@ const mail = useField("mail");
 
 const password = useField("password");
 
+const router = useRouter();
+
 const birth_date = useField("birth_date");
 
 const submit = handleSubmit(async (values) => {
@@ -102,7 +105,7 @@ const submit = handleSubmit(async (values) => {
 
 async function registerUser(user: string) {
   try {
-    const response = await axios.post("http://localhost:3002/users", user, {
+    const response = await axios.post("http://localhost:3002/singup", user, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -110,6 +113,7 @@ async function registerUser(user: string) {
 
     if (response.status == 201) {
       alert("sign up succesfull");
+      router.push("/");
     } else {
       console.log(response.data.message);
     }
