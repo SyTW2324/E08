@@ -1,7 +1,7 @@
 <template>
-  <SingUp />
+  <SignUp />
 </template>
 
 <script lang="ts" setup>
-import SingUp from "@/components/SingUp.vue";
+import SignUp from "@/components/SignUp.vue";
 </script>

@@ -13,9 +13,9 @@ const routes = [
         component: () => import("@/views/Home.vue"),
       },
       {
-        path: "singup",
-        name: "singup",
-        component: () => import("@/views/SingUp.vue"),
+        path: "signup",
+        name: "signup",
+        component: () => import("@/views/SignUp.vue"),
       },
       {
         path: "login",
@@ -36,7 +36,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const publicPages = ["/login", "/", "/singup"];
+  const publicPages = ["/login", "/", "/signup"];
   const authRequiered = !publicPages.includes(to.path);
   const loggedIn = localStorage.getItem("user");
   if (authRequiered && !loggedIn) {
