@@ -19,18 +19,26 @@
         <v-form @submit.prevent="submit">
           <p class="mx-auto text-red">Username</p>
           <v-text-field
+            data-cy="username"
             v-model="id.value.value"
             :error-messages="id.errorMessage.value"
           ></v-text-field>
           <p class="mx-auto text-red">Password</p>
           <v-text-field
+            data-cy="password"
             v-model="password.value.value"
             type="password"
             :error-messages="password.errorMessage.value"
           ></v-text-field>
 
           <div class="d-flex justify-center">
-            <v-btn color="red" class="login_btn" type="submit">Log In</v-btn>
+            <v-btn
+              data-cy="login-btn"
+              color="red"
+              class="login_btn"
+              type="submit"
+              >Log In</v-btn
+            >
           </div>
         </v-form>
       </v-card-text>
@@ -94,7 +102,8 @@ async function loginUser(id: string, password: string) {
       console.log(response.data.message);
     }
   } catch (error) {
-    console.error("Error on login:", error);
+    alert(error.response.data.message);
+    console.error("Error on login:", error.response.data.message);
   }
 }
 </script>
