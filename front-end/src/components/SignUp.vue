@@ -3,6 +3,7 @@
     <v-card class="mx-auto mt-5" outlined>
       <div class="d-flex flex-column align-center justify-center">
         <v-img
+          data-cy="logo_pr"
           src="@/assets/logo_libro.png"
           :width="300"
           contain
@@ -18,36 +19,48 @@
         <form @submit.prevent="submit">
           <p class="mx-auto text-red">Full Name</p>
           <v-text-field
+            data-cy="full_name"
             v-model="full_name.value.value"
             :counter="10"
             :error-messages="full_name.errorMessage.value"
           ></v-text-field>
           <p class="mx-auto text-red">User Name</p>
           <v-text-field
+            data-cy="username"
             v-model="id.value.value"
             :counter="10"
             :error-messages="id.errorMessage.value"
           ></v-text-field>
           <p class="mx-auto text-red">Password</p>
           <v-text-field
+            data-cy="password"
             v-model="password.value.value"
             type="password"
             :error-messages="password.errorMessage.value"
           ></v-text-field>
           <p class="mx-auto text-red">E-mail</p>
           <v-text-field
+            data-cy="mail"
             v-model="mail.value.value"
             :error-messages="mail.errorMessage.value"
             type="mail"
           ></v-text-field>
           <p class="mx-auto text-red">Birth Date</p>
           <v-text-field
+            data-cy="date"
             v-model="birth_date.value.value"
             type="date"
             :error-messages="birth_date.errorMessage.value"
           ></v-text-field>
 
-          <v-btn color="red" class="signup_btn" type="submit"> Sing up </v-btn>
+          <v-btn
+            data-cy="singup-btn"
+            color="red"
+            class="signup_btn"
+            type="submit"
+          >
+            Sing up
+          </v-btn>
         </form>
       </v-card-text>
     </v-card>
@@ -118,7 +131,8 @@ async function registerUser(user: string) {
       console.log(response.data.message);
     }
   } catch (error) {
-    console.error("Error on sign up:", error);
+    alert(error.response.data.message);
+    console.error("Error on login:", error.response.data.message);
   }
 }
 </script>
