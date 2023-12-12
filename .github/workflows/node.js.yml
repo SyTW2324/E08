@@ -29,11 +29,11 @@ jobs:
     
     - name: Install Backend dependencies
       run: npm install
-      working-directory: ./backend
+      working-directory: ./back-end
 
     - name: Install Frontend dependencies
       run: npm install
-      working-directory: ./frontend
+      working-directory: ./front-end
 
   #  - run: npm run build --if-present
   #  - run: npm test
