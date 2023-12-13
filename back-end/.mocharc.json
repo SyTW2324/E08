@@ -1,0 +1,6 @@
+{
+    "extensions": ["ts"],
+    "spec": ["tests/**/*.spec.*"],
+    "loader": "ts-node/esm"
+}
+  
