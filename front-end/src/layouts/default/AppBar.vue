@@ -19,13 +19,28 @@
 
     <v-btn
       v-if="isAuthenticated()"
+      v-for="item in items_auth"
+      :key="item.title"
+      :to="item.route"
+      class="nav-bar-btn hidden-sm-and-down"
+    >
+      {{ item.title }}
+    </v-btn>
+
+    <v-btn
+      v-if="isAuthenticated()"
       @click="logout()"
       class="nav-bar-btn hidden-sm-and-down"
     >
       Logout
     </v-btn>
   </v-app-bar>
-  <v-navigation-drawer v-model="drawer" location="left" temporary>
+  <v-navigation-drawer
+    v-model="drawer"
+    location="left"
+    temporary
+    v-if="!isAuthenticated()"
+  >
     <v-list>
       <v-list-item
         v-for="item in items_not_auth"
@@ -36,12 +51,31 @@
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
+  <v-navigation-drawer
+    v-model="drawer"
+    location="left"
+    temporary
+    v-if="isAuthenticated()"
+  >
+    <v-list>
+      <v-list-item
+        v-for="item in items_auth"
+        :key="item.title"
+        :to="item.route"
+      >
+        <v-list-item-title>{{ item.title }}</v-list-item-title>
+      </v-list-item>
+      <v-list-item key="logout" @click="logout()">Logout</v-list-item>
+    </v-list>
+  </v-navigation-drawer>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
+import { useUserStore } from "@/store/userStore";
 
+const userInfo = useUserStore();
 const router = useRouter();
 
 export default defineComponent({
@@ -51,7 +85,7 @@ export default defineComponent({
     items_not_auth: [
       {
         title: "Home",
-        route: "/",
+        route: "/home",
       },
       {
         title: "Log in",
@@ -62,6 +96,16 @@ export default defineComponent({
         route: "/signup",
       },
     ],
+    items_auth: [
+      {
+        title: "Home",
+        route: "/",
+      },
+      {
+        title: "Profile",
+        route: "/profile",
+      },
+    ],
   }),
   methods: {
     isAuthenticated() {
@@ -70,7 +114,12 @@ export default defineComponent({
       return false;
     },
     logout() {
-      localStorage.removeItem("token");
+      userInfo.clearUserInfo();
+      window.location.reload();
+      router.push("/");
+    },
+    goto_profile() {
+      router.push("/profile");
     },
   },
 });

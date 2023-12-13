@@ -50,6 +50,9 @@
 import axios from "axios";
 import { useField, useForm } from "vee-validate";
 import { useRouter } from "vue-router";
+import { useUserStore } from "@/store/userStore";
+
+const userStore = useUserStore();
 
 const { handleSubmit } = useForm({
   validationSchema: {
@@ -91,19 +94,21 @@ async function loginUser(id: string, password: string) {
         },
       }
     );
-
+    console.log(response);
     if (response.status === 200) {
       const token = response.data.token;
-      localStorage.setItem("token", token);
-      localStorage.setItem("loged", "yes");
+      const user = response.data.user;
+
+      userStore.setUserInfo(user, token);
+
       alert("Log In successful");
-      router.push("/");
+      location.reload();
+      router.push("/profile");
     } else {
       console.log(response.data.message);
     }
-  } catch (error) {
-    alert(error.response.data.message);
-    console.error("Error on login:", error.response.data.message);
+  } catch (error: any) {
+    console.error("Error on login:", error);
   }
 }
 </script>
