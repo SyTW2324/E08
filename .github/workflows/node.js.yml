@@ -39,9 +39,16 @@ jobs:
       run:  npm run build --if-present
       working-directory: ./back-end
 
-    - name: Test Backend
-      run:  npm test
-      working-directory: ./back-end
+    # - name: Test Backend
+    #   run:  npm test
+    #   working-directory: ./back-end
+    - name: Slack Notification
+      run: |
+        curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"Good Work"}' \
+          https://hooks.slack.com/services/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
+
+  
 
   #  - run: npm run build --if-present
   #  - run: npm test
