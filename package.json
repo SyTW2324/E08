@@ -1,6 +1,14 @@
 {
-  "dependencies": {
-    "mongodb": "^6.3.0",
-    "mongoose": "^8.0.1"
+  "name": "e-biblio",
+  "version": "1.0.0",
+  "description": "Biblioteca online",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test:back-end",
+    "test:back-end": "cd back-end && npm run test",
+    "test:front-end": "cd front-end && npm run test",
+    "build": "npm run build:back-end && npm run build:front-end",
+    "build:back-end": "cd back-end && npm i",
+    "build:front-end": "cd back-end && npm i"
   }
 }
