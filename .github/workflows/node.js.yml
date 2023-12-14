@@ -40,14 +40,6 @@ jobs:
         working-directory: ./back-end
         run: npm test
 
-      - name: Slack Notification
-        run: |
-          curl -X POST -H 'Content-type: application/json' \
-            --data '{"text":"Good Work"}' \
-            https://hooks.slack.com/services/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
-
-        if: always()
-
       - name: Slack notification 2
         uses: act10ns/slack@v2
         with:
