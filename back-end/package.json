@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "test": "env-cmd -f ./config/.env.test mocha"
+    "test": "env-cmd -f ./config/.env.test mocha --exit"
   },
   "keywords": [],
   "author": "",
