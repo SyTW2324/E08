@@ -30,6 +30,13 @@ jobs:
         with:
           mongodb-version: ${{ matrix.mongodb-version }}
 
+      - name: Debug Info
+        run: |
+          echo "Node.js version: $(node --version)"
+          echo "npm version: $(npm --version)"
+          ls -al
+        working-directory: ./back-end
+
       - name: Install dependencies
         run: npm i
         working-directory: ./back-end
