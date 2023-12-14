@@ -28,11 +28,12 @@
     "@types/chai": "^4.3.11",
     "@types/cors": "^2.8.17",
     "@types/jsonwebtoken": "^9.0.5",
-    "@types/mocha": "^10.0.6",
+
     "@types/supertest": "^2.0.16",
     "chai": "^4.3.10",
     "mocha": "^10.2.0",
     "supertest": "^6.3.3",
     "ts-node": "^10.9.2"
+
   }
 }

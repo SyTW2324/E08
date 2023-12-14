@@ -17,15 +17,19 @@ userRouter.post("/singup", async (req, res) => {
     await user.save();
     console.log("Registered!");
     // Sends the result to the client
-    return res.status(201).send({
+    const token = jwt.sign({ id: user.id }, "1234", {
+      expiresIn: "1h",
+    });
+    return res.status(201).json({
       messagge: "sign up successful",
+      token: token,
       code: 1,
     });
   } catch (error) {
     console.log(error);
     return res
       .status(406)
-      .send({ message: "Try an other username", code: 0, error: error });
+      .json({ message: "Try an other username", code: 0, error: error });
   }
 });
 
@@ -33,13 +37,14 @@ userRouter.post("/singup", async (req, res) => {
 userRouter.post("/login", async (req, res) => {
   try {
     console.log("Trying to log in");
-    console.log(req.body);
     const userName = req.body.id;
     const password = req.body.password;
 
     if (!userName || !password) {
       console.log("User or password not provided, aborting");
-      return res.status(400).send("Need username and password");
+      return res
+        .status(400)
+        .json({ message: "Need username and password", code: 0 });
     }
 
     const user = await User.findOne({ id: userName });
@@ -54,10 +59,10 @@ userRouter.post("/login", async (req, res) => {
       console.log("Login successful");
       return res
         .status(200)
-        .json({ message: "Login successful", code: 1, token });
+        .json({ message: "Login successful", code: 1, token, user });
     }
 
-    console.log("Password or username invalid");
+    console.log("Invalid username or password");
     return res
       .status(401)
       .json({ message: "Invalid username or password", code: 0 });

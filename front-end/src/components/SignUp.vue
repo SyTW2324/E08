@@ -70,7 +70,10 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import axios from "axios";
-import { GenericObject, useField, useForm } from "vee-validate";
+import { useField, useForm } from "vee-validate";
+import { useUserStore } from "@/store/userStore";
+
+const userStore = useUserStore();
 
 const { handleSubmit, handleReset } = useForm({
   validationSchema: {
@@ -125,12 +128,18 @@ async function registerUser(user: string) {
     });
 
     if (response.status == 201) {
-      alert("sign up succesfull");
-      router.push("/");
+      alert("Sign up succesfull");
+      const userInfo = JSON.parse(user);
+      const token = response.data.token;
+
+      userStore.setUserInfo(userInfo, token);
+
+      location.reload();
+      router.push("/home");
     } else {
       console.log(response.data.message);
     }
-  } catch (error) {
+  } catch (error: any) {
     alert(error.response.data.message);
     console.error("Error on login:", error.response.data.message);
   }
