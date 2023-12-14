@@ -12,6 +12,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
 
     strategy:
       max-parallel: 1
@@ -44,4 +46,11 @@ jobs:
             --data '{"text":"Good Work"}' \
             https://hooks.slack.com/services/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
 
+        if: always()
+
+      - name: Slack notification 2
+        uses: act10ns/slack@v2
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
         if: always()
