@@ -6,8 +6,9 @@ if (!process.env.MONGODB_URL) {
 }
 
 try {
-  await connect(process.env.MONGODB_URL!);
+  await connect(process.env.MONGODB_URL2!);
   console.log("Conectado al servidor MongoDB");
 } catch (error) {
+  console.log(error);
   console.log("No se pudo conectar al servidor MongoDB");
 }
