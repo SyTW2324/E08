@@ -5,13 +5,12 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "workflows" ]
+    branches: ["release"]
   pull_request:
-    branches: [ "workflows" ]
+    branches: ["release"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -20,35 +19,33 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-    
-    - name: Install Backend dependencies
-      run: npm install
-      working-directory: ./back-end
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Install Frontend dependencies
-      run: npm install
-      working-directory: ./front-end
+      - name: Install Backend dependencies
+        run: npm install
+        working-directory: ./back-end
 
-    - name: Build Backend
-      run:  npm run build --if-present
-      working-directory: ./back-end
+      - name: Install Frontend dependencies
+        run: npm install
+        working-directory: ./front-end
 
-    # - name: Test Backend
-    #   run:  npm test
-    #   working-directory: ./back-end
-    - name: Slack Notification
-      run: |
-        curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"Good Work"}' \
-          https://hooks.slack.com/services/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
+      - name: Build Backend
+        run: npm run build --if-present
+        working-directory: ./back-end
 
-  
+      - name: Test Backend
+        run: npm test
+        working-directory: ./back-end
+      - name: Slack Notification
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+            --data '{"text":"Good Work"}' \
+            https://hooks.slack.com/services/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
 
   #  - run: npm run build --if-present
   #  - run: npm test

@@ -121,7 +121,7 @@ const submit = handleSubmit(async (values) => {
 
 async function registerUser(user: string) {
   try {
-    const response = await axios.post("http://localhost:3002/singup", user, {
+    const response = await axios.post("http://localhost:3002/signup", user, {
       headers: {
         "Content-Type": "application/json",
       },

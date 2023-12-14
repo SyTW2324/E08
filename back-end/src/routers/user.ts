@@ -6,16 +6,14 @@ export const userRouter = express.Router();
 import jwt from "jsonwebtoken";
 
 // Register a user
-userRouter.post("/singup", async (req, res) => {
+userRouter.post("/signup", async (req, res) => {
   try {
-    console.log(req.body);
-    console.log("Trying to register user");
     // Adds the user to the database
     const user = new User({
       ...req.body,
     });
     await user.save();
-    console.log("Registered!");
+
     // Sends the result to the client
     const token = jwt.sign({ id: user.id }, "1234", {
       expiresIn: "1h",
@@ -26,7 +24,6 @@ userRouter.post("/singup", async (req, res) => {
       code: 1,
     });
   } catch (error) {
-    console.log(error);
     return res
       .status(406)
       .json({ message: "Try an other username", code: 0, error: error });
@@ -36,12 +33,10 @@ userRouter.post("/singup", async (req, res) => {
 // Log in
 userRouter.post("/login", async (req, res) => {
   try {
-    console.log("Trying to log in");
     const userName = req.body.id;
     const password = req.body.password;
 
     if (!userName || !password) {
-      console.log("User or password not provided, aborting");
       return res
         .status(400)
         .json({ message: "Need username and password", code: 0 });
@@ -56,18 +51,15 @@ userRouter.post("/login", async (req, res) => {
         expiresIn: "1h",
       });
 
-      console.log("Login successful");
       return res
         .status(200)
         .json({ message: "Login successful", code: 1, token, user });
     }
 
-    console.log("Invalid username or password");
     return res
       .status(401)
       .json({ message: "Invalid username or password", code: 0 });
   } catch (error) {
-    console.log(error);
     return res.status(500).send(error);
   }
 });
@@ -126,26 +118,27 @@ userRouter.patch("/users", async (req, res) => {
 });
 
 // Deletes users by name NOT IMPLEMENTED JUST A TEMPLATE
-userRouter.delete("/users", async (req, res) => {
+userRouter.delete("/user/:id", async (req, res) => {
   try {
-    if (!req.query.name) {
+    if (!req.query.id) {
       return res.status(400).send({
-        error: "Se debe proveer el nombre de usuario",
+        error: "Needs id",
       });
     }
 
-    // Finds the users by name
-    const users = await User.find({ full_name: req.query.name.toString() });
+    // Finds the users by id
+    const users = await User.find({ id: req.query.id.toString() });
     if (users.length !== 0) {
       for (let i = 0; i < users.length; i++) {
         // Deletes an user
         const deletedUser = await User.findByIdAndDelete(users[i]._id);
-        if (!deletedUser) return res.status(404).send();
+        if (!deletedUser)
+          return res.status(404).send("User not found, eror in deleting");
       }
       // Sends the result to the client
-      return res.send(users);
+      return res.status(200).send("User deleted");
     }
-    return res.status(404).send();
+    return res.status(404).send("User not found");
   } catch (error) {
     return res.status(500).send(error);
   }
