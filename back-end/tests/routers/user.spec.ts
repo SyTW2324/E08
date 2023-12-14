@@ -4,6 +4,7 @@ import { app } from "../../src/app.js";
 import request from "supertest";
 import { expect } from "chai";
 import { User } from "../../src/models/user.js";
+import { describe, it, beforeEach } from "mocha";
 
 const defaultUser = {
   id: "saul",
