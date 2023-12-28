@@ -4,6 +4,7 @@
   "description": "Biblioteca online",
   "main": "index.js",
   "scripts": {
+    "coverage": "cd back-end && npm run coverage",
     "test": "npm run test:back-end",
     "test:back-end": "cd back-end && npm run test",
     "test:front-end": "cd front-end && npm run test",
