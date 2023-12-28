@@ -41,7 +41,7 @@ jobs:
         working-directory: ./back-end
         run: npm test
 
-      - name: Slack notification 2
+      - name: Slack notification
         uses: act10ns/slack@v2
         with:
           status: ${{ job.status }}
