@@ -1,4 +1,4 @@
-name: Sonar cloud
+name: CQQ
 on:
   push:
     branches: ["release"]
@@ -12,6 +12,10 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v2.2.3
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
