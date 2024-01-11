@@ -64,31 +64,32 @@ userRouter.post("/login", async (req, res) => {
   }
 });
 
-// Updates users by name NOT IMPLEMENTED JUST A TEMPLATE
+// Updates users by id
 userRouter.patch("/users", async (req, res) => {
   try {
-    if (!req.query.name) {
+    if (!req.query.id) {
       return res.status(400).send({
-        error: "Se debe proporcionar un nombre",
+        message: "A id must be provided",
+        code: 0,
       });
     }
-
     // Checks if update is allowed
-    const allowedUpdates = ["name", "birth_date", "mail"];
+    const allowedUpdates = ["full_name", "mail", "birth_date"];
     const actualUpdates = Object.keys(req.body);
     const isValidUpdate = actualUpdates.every((update) =>
       allowedUpdates.includes(update)
     );
     if (!isValidUpdate) {
       return res.status(400).send({
-        error: "Actualización no permitida",
+        message: "Update not permited",
+        code: 0
       });
     }
 
     // Checks if elements from body exist and get previous info
 
     // Finds the users by name
-    const users = await User.find({ full_name: req.query.name.toString() });
+    const users = await User.find({ id: req.query.id.toString() });
     if (users.length !== 0) {
       const updatedUsers: UserDocumentInterface[] = [];
       for (let index = 0; index < users.length; index++) {
@@ -104,25 +105,26 @@ userRouter.patch("/users", async (req, res) => {
             runValidators: true,
           }
         );
-
-        // Updates the user information in the other collections
       }
-
       // Sends the result to the client
-      return res.send(updatedUsers);
+      return res.status(201).send({ users: updatedUsers });
     }
-    return res.status(404).send();
+    return res.status(404).send({
+      message: "User not found",
+      code: 0
+    });
   } catch (error) {
     return res.status(500).send(error);
   }
 });
 
 // Deletes users by name NOT IMPLEMENTED JUST A TEMPLATE
-userRouter.delete("/user/:id", async (req, res) => {
+userRouter.delete("/users", async (req, res) => {
   try {
     if (!req.query.id) {
       return res.status(400).send({
-        error: "Needs id",
+        message: "A id must be provided",
+        code: 0
       });
     }
 
@@ -132,13 +134,15 @@ userRouter.delete("/user/:id", async (req, res) => {
       for (let i = 0; i < users.length; i++) {
         // Deletes an user
         const deletedUser = await User.findByIdAndDelete(users[i]._id);
-        if (!deletedUser)
-          return res.status(404).send("User not found, eror in deleting");
       }
       // Sends the result to the client
-      return res.status(200).send("User deleted");
+      return res.status(200).send({
+        message: "User deleted"
+      });
     }
-    return res.status(404).send("User not found");
+    return res.status(404).send({
+      message: "User not found, error in deleting"
+    });
   } catch (error) {
     return res.status(500).send(error);
   }
