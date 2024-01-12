@@ -1,48 +1,67 @@
 import express from "express";
-import { Book, BookDocumentInterface } from "../models/book.js";
+import { Book } from "../models/book.js";
 
 export const bookRouter = express.Router();
 
 bookRouter.post("/books", async (req, res) => {
   try {
-    // Adds book to the database
+    const { id,
+      description,
+      book_name,
+      author,
+      genres,
+      release_year,
+      editorial,
+      bookcover } = req.body;
+
+    // Validate required fields
+    if (!id || !author || !description || !book_name || !genres || !release_year || !editorial || !bookcover) {
+      return res.status(400).json({ message: "All are required fields" });
+    }
     const book = new Book({
-      ...req.body,
+      id,
+      description,
+      book_name,
+      author,
+      genres,
+      release_year,
+      editorial,
+      bookcover,
     });
+
     await book.save();
-    return res.status(201).json({ message: "Successfuly added book", book });
-  } catch(error) {
-    return res
-      .status(406).json({ message: "Try another book", code: 0, error: error });
+    return res.status(201).json({ message: "Successfully added book", book });
+  } catch (error) {
+    console.error("Error adding book:", error);
+    return res.status(406).json({ message: "Try another book", code: 0 });
   }
 });
 
 bookRouter.patch("/books/:id", async (req, res) => {
   try {
-    // Use req.params.id to get the book ID from the route parameters
     const bookId = req.params.id;
 
-    // Checks if update is allowed
+    // Validate at least one valid field is being updated
     const allowedUpdates = ["description", "genres"];
     const actualUpdates = Object.keys(req.body);
-    const isValidUpdate = actualUpdates.every((update) =>
+    const isValidUpdate = actualUpdates.some((update) =>
       allowedUpdates.includes(update)
     );
 
     if (!isValidUpdate) {
-      return res.status(400).send({
-        message: "Update not permitted",
-      });
+      return res.status(400).json({ message: "At least one valid field is required for update" });
     }
+
     const updatedBook = await Book.findByIdAndUpdate(bookId, req.body, { new: true });
 
     if (!updatedBook) {
-      return res.status(404).json({message: "Book not found"});
+      return res.status(404).json({ message: "Book not found" });
     }
 
-    return res.status(200).json({message: "Book successfuly updated", updatedBook});
-  } catch(error) {
-    return res.status(500).send(error);
+    return res.status(200).json({ message: "Book successfully updated", updatedBook });
+  } catch (error) {
+    console.error("Error updating book:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
@@ -55,8 +74,9 @@ bookRouter.delete("/books/:id", async (req, res) => {
       return res.status(404).json({ message: "Book not found" });
     }
 
-    return res.status(200).json({ message: "Book successfuly deleted", deletedBook });
+    return res.status(200).json({ message: "Book successfully deleted", deletedBook });
   } catch (error) {
-    return res.status(500).send(error);
+    console.error("Error deleting book:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 });

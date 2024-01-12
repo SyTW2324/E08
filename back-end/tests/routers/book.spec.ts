@@ -83,7 +83,7 @@ describe("Book Routes", () => {
         });
 
       expect(response.status).to.equal(400);
-      expect(response.body).to.have.property("message", "Update not permitted");
+      expect(response.body).to.have.property("message", "At least one valid field is required for update");
     });
 
     // it("should handle not finding a book to update", async () => {
