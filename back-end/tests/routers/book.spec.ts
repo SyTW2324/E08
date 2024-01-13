@@ -104,7 +104,7 @@ describe("Book Routes", () => {
     });
   });
 
-  // describe("DELETE /books/:id", () => {
+  describe("DELETE /books/:id", () => {
   //   it("should delete a book", async () => {
   //     const response = await request(app).delete(`/books?id=${defaultBook.id}`);
 
@@ -113,12 +113,11 @@ describe("Book Routes", () => {
   //     expect(response.body).to.have.property("deletedBook");
   //   });
 
-  //   it("should handle errors when deleting a book", async () => {
-  //     // Attempt to delete with an invalid ID or unauthorized user
-  //     const response = await request(app).delete("/books?id=0");
+    it("should handle errors when deleting a book", async () => {
+      // Attempt to delete with an invalid ID or unauthorized user
+      const response = await request(app).delete("/books?id=1000");
 
-  //     expect(response.status).to.equal(404);
-  //     expect(response.body).to.have.property("message", "Book not found");
-  //   });
-  // });
+      expect(response.status).to.equal(404);
+    });
+  });
 });
