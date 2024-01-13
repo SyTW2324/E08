@@ -5,14 +5,14 @@ import { Book } from "../../src/models/book.js";
 
 
 const defaultBook = {
-  id: 1,
+  id: 0,
   description: "aaa",
-  book_name: "El Principito",
-  author: "Antoine de Saint-Exupéry",
-  genres: ["Literatura Infantil", "Novela Corta"],
-  release_year: 1943,
-  editorial: "Editorial Salamandra",
-  bookcover: "../../front-end/src/assets/bookcovers/ElPrincipito_bookcover.jpg",
+  book_name: "1984",
+  author: "George Orwell",
+  genres: [" a ", " a "],
+  release_year: 1949,
+  editorial: "DEBOLSILLO",
+  bookcover: "../../front-end/src/assets/bookcovers/1984_bookcover.jpg",
 };
 
 beforeEach(async () => {
@@ -22,24 +22,30 @@ beforeEach(async () => {
 
 describe("Book Routes", () => {
   describe("POST /books", () => {
-    // it("should register a new book", async () => {
-    //   await request(app).delete(`/books?id=${defaultBook.id}`);
-    //   const response = await request(app).post("/books").send({
-    //     id: 2,
-    //     description: "aaa",
-    //     book_name: "Testbook",
-    //     author: "tess test",
-    //     genres: ["T"],
-    //     release_year: 1943,
-    //     editorial: "Test",
-    //     bookcover: "../../front-end/src/assets/bookcovers/Alicia_bookcover.jpg",
-    //   });
+    it("should register a new book", async () => {
+      try {
+        console.log("Deleting existing books...");
+        await Book.deleteMany();
+        console.log("Existing books deleted.");
+      } catch (error) {
+        console.error("Error deleting existing books:", error);
+      }
+      const response = await request(app).post("/books").send({
+        id: 2,
+        description: "aaa",
+        book_name: "Testbook",
+        author: "tess test",
+        genres: ["T"],
+        release_year: 1943,
+        editorial: "Test",
+        bookcover: "../../front-end/src/assets/bookcovers/Alicia_bookcover.jpg",
+      });
 
-    //   console.log("Response:", response.body); // Log the entire response for more details
+      console.log("Response:", response.body); // Log the entire response for more details
 
-    //   expect(response.status).to.equal(201);
-    //   expect(response.body).to.have.property("message", "Successfully added book");
-    // });
+      expect(response.status).to.equal(201);
+      expect(response.body).to.have.property("message", "Successfully added book");
+    });
 
     it("should handle registration errors", async () => {
       await request(app).delete(`/books?id=${defaultBook.id}`);
@@ -61,18 +67,18 @@ describe("Book Routes", () => {
   });
 
   describe("PATCH /books", () => {
-    // it("should update a book", async () => {
-    //   const response = await request(app)
-    //     .patch(`/books?id=${defaultBook.id}`)
-    //     .send({
-    //       description: "Updated Description",
-    //       genres: ["Updated Genre"],
-    //     });
+    it("should update a book", async () => {
+      const response = await request(app)
+        .patch(`/books?id=${defaultBook.id}`)
+        .send({
+          description: "Updated Description",
+          genres: ["Updated Genre"],
+        });
 
-    //   expect(response.status).to.equal(200);
-    //   expect(response.body).to.have.property("message", "Book successfully updated");
-    //   expect(response.body).to.have.property("updatedBook");
-    // });
+      expect(response.status).to.equal(200);
+      expect(response.body).to.have.property("message", "Book successfully updated");
+      expect(response.body).to.have.property("updatedBook");
+    });
 
     it("should handle errors when updating a book", async () => {
       // Attempt to update with invalid data or unauthorized user
