@@ -40,9 +40,7 @@ describe("Book Routes", () => {
         editorial: "Test",
         bookcover: "../../front-end/src/assets/bookcovers/Alicia_bookcover.jpg",
       });
-
-      console.log("Response:", response.body); // Log the entire response for more details
-
+      
       expect(response.status).to.equal(201);
       expect(response.body).to.have.property("message", "Successfully added book");
     });
@@ -81,7 +79,19 @@ describe("Book Routes", () => {
     //   expect(response.body).to.have.property("updatedBook");
     // });
 
-    it("should handle errors when updating a book", async () => {
+    it("should handle errors when updating a book(No valid field)", async () => {
+      // Attempt to update with invalid data or unauthorized user
+      console.log("ID del libro a actualizar:", defaultBook.id);
+      const response = await request(app)
+        .patch("/books?id=1")
+        .send({
+          release_year: 2011,
+        });
+
+      expect(response.status).to.equal(400);
+    });
+
+    it("should handle errors when updating a book(A id must be provide)", async () => {
       // Attempt to update with invalid data or unauthorized user
       const response = await request(app)
         .patch(`/books/${2}`)
@@ -90,7 +100,18 @@ describe("Book Routes", () => {
         });
 
       expect(response.status).to.equal(400);
-      expect(response.body).to.have.property("message", "At least one valid field is required for update");
+      expect(response.body).to.have.property("message", "A id must be provided");
+    });
+
+    it("should handle errors when updating a book (Not knowned id)", async () => {
+      // Attempt to update with invalid data or unauthorized user
+      const response = await request(app)
+        .patch("/books?id=${2}")
+        .send({
+          release_year: 2011,
+        });
+
+      expect(response.status).to.equal(404);
     });
 
     it("should handle not finding a book to update", async () => {
@@ -105,13 +126,13 @@ describe("Book Routes", () => {
   });
 
   describe("DELETE /books/:id", () => {
-  //   it("should delete a book", async () => {
-  //     const response = await request(app).delete(`/books?id=${defaultBook.id}`);
+    it("should delete a book", async () => {
+      const response = await request(app).delete(`/books?id=${0}`);
 
-  //     expect(response.status).to.equal(200);
-  //     expect(response.body).to.have.property("message", "Book successfully deleted");
-  //     expect(response.body).to.have.property("deletedBook");
-  //   });
+      expect(response.status).to.equal(200);
+      expect(response.body).to.have.property("message", "Book successfully deleted");
+      expect(response.body).to.have.property("deletedBook");
+    });
 
     it("should handle errors when deleting a book", async () => {
       // Attempt to delete with an invalid ID or unauthorized user

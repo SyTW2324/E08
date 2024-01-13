@@ -1,5 +1,5 @@
 import express from "express";
-import { Book } from "../models/book.js";
+import { Book, BookDocumentInterface } from "../models/book.js";
 
 export const bookRouter = express.Router();
 
@@ -39,9 +39,12 @@ bookRouter.post("/books", async (req, res) => {
 
 bookRouter.patch("/books/:id", async (req, res) => {
   try {
-    const bookId = req.params.id;
-
-    // Validate at least one valid field is being updated
+    if (!req.query.id) {
+      return res.status(400).send({
+        message: "A id must be provided",
+        code: 0
+      });
+    }
     const allowedUpdates = ["description", "genres"];
     const actualUpdates = Object.keys(req.body);
     const isValidUpdate = actualUpdates.some((update) =>
@@ -52,13 +55,30 @@ bookRouter.patch("/books/:id", async (req, res) => {
       return res.status(400).json({ message: "At least one valid field is required for update" });
     }
 
-    const updatedBook = await Book.findByIdAndUpdate(bookId, req.body);
-
-    if (!updatedBook) {
-      return res.status(404).send({ message: "Book not found", code: 0});
+    const books = await Book.find({ id: req.query.id.toString() });
+    if (books.length !== 0) {
+      const updatedBook: BookDocumentInterface[] = [];
+      for (let index = 0; index < books.length; index++) {
+        // Updates a book
+        const bookToUpdate = books[index];
+        const updatedBook = await Book.findByIdAndUpdate(
+          bookToUpdate._id,
+          {
+            ...req.body,
+          },
+          {
+            new: true,
+            runValidators: true,
+          }
+        );
+      }
+      // Sends the result to the client
+      return res.status(201);
     }
-
-    return res.status(200).send({ message: "Book successfully updated", updatedBook });
+    return res.status(404).send({
+      message: "User not found",
+      code: 0
+    });
   } catch (error) {
     console.error("Error updating book:", error);
     return res.status(500).send({ message: "Internal Server Error" });
@@ -67,16 +87,25 @@ bookRouter.patch("/books/:id", async (req, res) => {
 
 bookRouter.delete("/books/:id", async (req, res) => {
   try {
-    const bookId = req.params.id;
-    const deletedBook = await Book.findByIdAndDelete(bookId);
-
-    if (!deletedBook) {
-      return res.status(404).send({ message: "Book not found" });
+    if (!req.query.id) {
+      return res.status(400).send({
+        message: "A id must be provided",
+        code: 0
+      });
     }
-
-    return res.status(200).send({ message: "Book successfully deleted", deletedBook });
+    const books = await Book.find({ id: req.query.id.toString() });
+    if (books.length !== 0) {
+      for (let i = 0; i < books.length; i++) {
+        // Deletes an book
+        const deletedBook= await Book.findByIdAndDelete(books[i]._id);
+      }
+      // Sends the result to the client
+      return res.status(200).send({
+        message: "Book deleted"
+      });
+    }
+    return res.status(404).send({ message: "Book not found" });
   } catch (error) {
-    console.error("Error deleting book:", error);
     return res.status(500).send({ message: "Internal Server Error" });
   }
 });
