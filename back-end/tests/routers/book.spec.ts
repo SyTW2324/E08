@@ -62,6 +62,20 @@ describe("Book Routes", () => {
       expect(response.body).to.have.property("message", "Try another book");
       expect(response.body).to.have.property("code", 0);
     });
+    it("should handle registration errors", async () => {
+      await request(app).delete(`/books?id=${defaultBook.id}`);
+      const response = await request(app).post("/books").send({
+        id: 13,
+        description: "aaaa",
+        book_name: "AA",
+        author: "tess test",
+        genres: ["L"],
+        release_year: 1000,
+      });
+
+      expect(response.status).to.equal(400);
+      expect(response.body).to.have.property("message", "All are required fields");
+    });
   });
 
   describe("PATCH /books", () => {
@@ -90,7 +104,7 @@ describe("Book Routes", () => {
 
     it("should handle not finding a book to update", async () => {
       const response = await request(app)
-        .patch("/books?id=10000")
+        .patch("/books/1000")
         .send({
           description: "Updated Description",
         });
