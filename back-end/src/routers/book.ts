@@ -39,61 +39,67 @@ bookRouter.post("/books", async (req, res) => {
 
 bookRouter.patch("/books/:id", async (req, res) => {
   try {
-    if (!req.query.id) {
-      return res.status(400).send({
-        message: "A id must be provided",
+    const bookId = req.params.id;
+
+    if (!bookId) {
+      return res.status(400).json({
+        message: "A valid book ID must be provided",
         code: 0
       });
     }
+
     const allowedUpdates = ["description", "genres"];
     const actualUpdates = Object.keys(req.body);
-    const isValidUpdate = actualUpdates.some((update) =>
-      allowedUpdates.includes(update)
-    );
+    const isValidUpdate = actualUpdates.some((update) => allowedUpdates.includes(update));
 
     if (!isValidUpdate) {
       return res.status(400).json({ message: "At least one valid field is required for update" });
     }
 
-    const books = await Book.find({ id: req.query.id.toString() });
+    const books = await Book.find({ id: bookId });
+
     if (books.length !== 0) {
-      const updatedBook: BookDocumentInterface[] = [];
+      const updatedBooks: BookDocumentInterface[] = [];
+
       for (let index = 0; index < books.length; index++) {
-        // Updates a book
         const bookToUpdate = books[index];
         const updatedBook = await Book.findByIdAndUpdate(
           bookToUpdate._id,
-          {
-            ...req.body,
-          },
-          {
-            new: true,
-            runValidators: true,
-          }
+          { ...req.body },
+          { new: true, runValidators: true }
         );
+
+        if (updatedBook) {
+          updatedBooks.push(updatedBook);
+        }
       }
-      // Sends the result to the client
-      return res.status(201);
+
+      return res.status(200).json({
+        message: "Book successfully updated",
+        updatedBooks
+      });
     }
-    return res.status(404).send({
-      message: "User not found",
+
+    return res.status(404).json({
+      message: "Book not found",
       code: 0
     });
   } catch (error) {
     console.error("Error updating book:", error);
-    return res.status(500).send({ message: "Internal Server Error" });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
+
 bookRouter.delete("/books/:id", async (req, res) => {
   try {
-    if (!req.query.id) {
+    if (!req.params.id) {
       return res.status(400).send({
         message: "A id must be provided",
         code: 0
       });
     }
-    const books = await Book.find({ id: req.query.id.toString() });
+    const books = await Book.find({ id: req.params.id });
     if (books.length !== 0) {
       for (let i = 0; i < books.length; i++) {
         // Deletes an book
@@ -101,7 +107,7 @@ bookRouter.delete("/books/:id", async (req, res) => {
       }
       // Sends the result to the client
       return res.status(200).send({
-        message: "Book deleted"
+        message: "Book successfully deleted"
       });
     }
     return res.status(404).send({ message: "Book not found" });

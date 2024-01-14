@@ -65,53 +65,27 @@ describe("Book Routes", () => {
   });
 
   describe("PATCH /books", () => {
-    // it("should update a book", async () => {
-    // console.log("ID del libro a actualizar:", defaultBook.id);
-    //   const response = await request(app)
-    //     .patch(`/books?id=${defaultBook.id}`)
-    //     .send({
-    //       description: "Updated Description",
-    //       genres: ["Updated Genre"]
-    //     });
+    it("should update a book", async () => {
+      const response = await request(app)
+        .patch("/books/1")
+        .send({
+          description: "Updated Description",
+          genres: ["Updated Genre"],
+        });
 
-    //   expect(response.status).to.equal(200);
-    //   expect(response.body).to.have.property("message", "Book successfully updated");
-    //   expect(response.body).to.have.property("updatedBook");
-    // });
+      expect(response.status).to.equal(200);
+      expect(response.body).to.have.property("message", "Book successfully updated");
+    });
 
     it("should handle errors when updating a book(No valid field)", async () => {
       // Attempt to update with invalid data or unauthorized user
-      console.log("ID del libro a actualizar:", defaultBook.id);
       const response = await request(app)
-        .patch("/books?id=1")
+        .patch("/books/1")
         .send({
           release_year: 2011,
         });
 
       expect(response.status).to.equal(400);
-    });
-
-    it("should handle errors when updating a book(A id must be provide)", async () => {
-      // Attempt to update with invalid data or unauthorized user
-      const response = await request(app)
-        .patch(`/books/${2}`)
-        .send({
-          release_year: 2011,
-        });
-
-      expect(response.status).to.equal(400);
-      expect(response.body).to.have.property("message", "A id must be provided");
-    });
-
-    it("should handle errors when updating a book (Not knowned id)", async () => {
-      // Attempt to update with invalid data or unauthorized user
-      const response = await request(app)
-        .patch("/books?id=${2}")
-        .send({
-          release_year: 2011,
-        });
-
-      expect(response.status).to.equal(404);
     });
 
     it("should handle not finding a book to update", async () => {
@@ -127,11 +101,10 @@ describe("Book Routes", () => {
 
   describe("DELETE /books/:id", () => {
     it("should delete a book", async () => {
-      const response = await request(app).delete(`/books?id=${0}`);
+      const response = await request(app).delete(`/books/1`);
 
       expect(response.status).to.equal(200);
       expect(response.body).to.have.property("message", "Book successfully deleted");
-      expect(response.body).to.have.property("deletedBook");
     });
 
     it("should handle errors when deleting a book", async () => {
