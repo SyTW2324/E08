@@ -39,7 +39,7 @@ describe("Book Routes", () => {
           genres: ["T"],
           release_year: 1943,
           editorial: "Test",
-          bookcover: "../src/assets/bookcovers/Alicia_bookcover.jpg",
+          bookcover: "../src/assets/bookcovers/A_bookcover.jpg",
         });
       expect(response.status).to.equal(201);
       expect(response.body).to.have.property(
@@ -83,6 +83,19 @@ describe("Book Routes", () => {
         "message",
         "All are required fields"
       );
+    });
+  });
+
+  describe("GET /books", () => {
+    it("It should show books", async () => {
+      const response = await request(app).get("/books");
+      expect(response.status).to.equal(201);
+      expect(response.body).to.have.property("message", "List with books");
+    });
+
+    it("It should show groups by id", async () => {
+      const response = await request(app).get("/books/23");
+      expect(response.status).to.equal(404);
     });
   });
 
