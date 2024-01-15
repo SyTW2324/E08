@@ -22,10 +22,10 @@ const BookSchema = new Schema<BookDocumentInterface>({
     required: true,
     trim: true,
     validate: (value: string) => {
-        if(value.length > 1000) {
-            throw new Error("Description is too long");
-        }
-    }
+      if (value.length > 1000) {
+        throw new Error("Description is too long");
+      }
+    },
   },
   book_name: {
     type: String,
@@ -64,7 +64,7 @@ const BookSchema = new Schema<BookDocumentInterface>({
     trim: true,
     unique: true,
     validate: (value: string) => {
-      if (/^\.+\/front-end\/src\/assets\/bookcovers\/.*\.jpg$/.test(value)) {
+      if (/^\.\.\/src\/assets\/bookcover\/.*\.(jpg|jpeg)$/.test(value)) {
         throw new Error("Not a valid route");
       }
     },

@@ -1,6 +1,5 @@
 import { Document, Schema, model } from "mongoose";
 import { UserDocumentInterface } from "./user.js";
-import { GroupChatDocumentInterface } from "./groupchat.js";
 
 export interface GroupDocumentInterface extends Document {
   id: number;
@@ -8,7 +7,6 @@ export interface GroupDocumentInterface extends Document {
   group_name: string;
   genres: string[];
   members: UserDocumentInterface[];
-  groupchat: GroupChatDocumentInterface;
 }
 
 const GroupSchema = new Schema<GroupDocumentInterface>({
@@ -37,11 +35,6 @@ const GroupSchema = new Schema<GroupDocumentInterface>({
     type: [Schema.Types.ObjectId],
     required: true,
     ref: "User",
-  },
-  groupchat: {
-    type: [Schema.Types.ObjectId],
-    required: true,
-    ref: "GroupChat",
   },
 });
 

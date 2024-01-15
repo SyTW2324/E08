@@ -87,13 +87,17 @@ const isLoading = ref(false);
 const submit = handleSubmit(async (values) => {
   const { id, password } = values;
   isLoading.value = true;
-  await loginUser(id, password);
-  setTimeout(() => {}, 1000);
-  router.go(0);
-  router.push("/");
+
+  if (await loginUser(id, password)) {
+    alert("Logged In");
+    router.push("/");
+    location.reload();
+  } else {
+    alert("Invalid credentials");
+  }
 });
 
-async function loginUser(id: string, password: string) {
+async function loginUser(id: string, password: string): Promise<Boolean> {
   try {
     const response = await axios.post(
       "http://localhost:3002/login",
@@ -107,17 +111,19 @@ async function loginUser(id: string, password: string) {
         },
       }
     );
-    console.log(response);
     if (response.status === 200) {
       const token = response.data.token;
       const user = response.data.user;
 
       userStore.setUserInfo(user, token);
+      return true;
     } else {
       console.log(response.data.message);
+      return false;
     }
   } catch (error: any) {
     console.error("Error on login:", error);
+    return false;
   }
 }
 </script>

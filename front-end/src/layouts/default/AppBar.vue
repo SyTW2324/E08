@@ -1,6 +1,5 @@
 <template>
   <v-app-bar color="red darken-2">
-    <v-icon>mdi-book-open-variant</v-icon>
     <v-app-bar-title class="nav-bar-title">E-Biblio</v-app-bar-title>
     <v-spacer></v-spacer>
     <v-app-bar-nav-icon
@@ -96,6 +95,11 @@ export default defineComponent({
         icon: "mdi-home",
       },
       {
+        title: "Books",
+        route: "/books",
+        icon: "mdi-book-open-variant",
+      },
+      {
         title: "Log in",
         route: "/login",
         icon: "mdi-login",
@@ -116,6 +120,12 @@ export default defineComponent({
         title: "Profile",
         route: "/profile",
         icon: "mdi-account-circle-outline",
+      },
+
+      {
+        title: "Books",
+        route: "/books",
+        icon: "mdi-book-open-variant",
       },
     ],
   }),

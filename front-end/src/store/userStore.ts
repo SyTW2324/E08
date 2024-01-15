@@ -73,7 +73,6 @@ export const useUserStore = defineStore("user", {
       if (token) {
         const check = jwtDecode(token);
         expireDate = Number(check.exp);
-        console.log(Number(Date.now() / 1000) - expireDate);
         if (Number(Date.now() / 1000) < expireDate) return false;
         return true;
       }

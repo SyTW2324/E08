@@ -11,7 +11,7 @@ const defaultBook = {
   genres: [" a ", " a "],
   release_year: 1949,
   editorial: "DEBOLSILLO",
-  bookcover: "../../front-end/src/assets/bookcovers/1984_bookcover.jpg",
+  bookcover: "../src/assets/bookcovers/1984_bookcover.jpg",
 };
 
 beforeEach(async () => {
@@ -39,8 +39,7 @@ describe("Book Routes", () => {
           genres: ["T"],
           release_year: 1943,
           editorial: "Test",
-          bookcover:
-            "../../front-end/src/assets/bookcovers/Alicia_bookcover.jpg",
+          bookcover: "../src/assets/bookcovers/Alicia_bookcover.jpg",
         });
       expect(response.status).to.equal(201);
       expect(response.body).to.have.property(
@@ -60,8 +59,7 @@ describe("Book Routes", () => {
           genres: ["L"],
           release_year: 1943,
           editorial: "Test",
-          bookcover:
-            "../../front-end/src/assets/bookcovers/Alicia_bookcover.jpg",
+          bookcover: "../src/assets/bookcovers/Alicia_bookcover.jpg",
         });
 
       expect(response.status).to.equal(406);
