@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { UserInfo } from "@/interfaces/user";
-import { stat } from "fs";
+import { jwtDecode } from "jwt-decode";
+import { Certificate } from "crypto";
 
 interface UserState {
   id: string;
@@ -65,6 +66,18 @@ export const useUserStore = defineStore("user", {
       this.token = "";
       localStorage.removeItem("userData");
       localStorage.removeItem("token");
+    },
+    checkExpired() {
+      const token = localStorage.getItem("token");
+      let expireDate = 0;
+      if (token) {
+        const check = jwtDecode(token);
+        expireDate = Number(check.exp);
+        console.log(Number(Date.now() / 1000) - expireDate);
+        if (Number(Date.now() / 1000) < expireDate) return false;
+        return true;
+      }
+      return true;
     },
   },
 });

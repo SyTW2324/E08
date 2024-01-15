@@ -2,7 +2,7 @@ import express from "express";
 import { User, UserDocumentInterface } from "../models/user.js";
 
 export const userRouter = express.Router();
-
+import * as jose from "jose";
 import jwt from "jsonwebtoken";
 
 // Register a user
@@ -14,10 +14,10 @@ userRouter.post("/signup", async (req, res) => {
     });
     await user.save();
 
-    // Sends the result to the client
     const token = jwt.sign({ id: user.id }, "1234", {
       expiresIn: "1h",
     });
+
     return res.status(201).json({
       messagge: "sign up successful",
       token: token,
@@ -82,7 +82,7 @@ userRouter.patch("/users", async (req, res) => {
     if (!isValidUpdate) {
       return res.status(400).send({
         message: "Update not permited",
-        code: 0
+        code: 0,
       });
     }
 
@@ -111,7 +111,7 @@ userRouter.patch("/users", async (req, res) => {
     }
     return res.status(404).send({
       message: "User not found",
-      code: 0
+      code: 0,
     });
   } catch (error) {
     return res.status(500).send(error);
@@ -124,7 +124,7 @@ userRouter.delete("/users", async (req, res) => {
     if (!req.query.id) {
       return res.status(400).send({
         message: "A id must be provided",
-        code: 0
+        code: 0,
       });
     }
 
@@ -137,11 +137,11 @@ userRouter.delete("/users", async (req, res) => {
       }
       // Sends the result to the client
       return res.status(200).send({
-        message: "User deleted"
+        message: "User deleted",
       });
     }
     return res.status(404).send({
-      message: "User not found, error in deleting"
+      message: "User not found, error in deleting",
     });
   } catch (error) {
     return res.status(500).send(error);

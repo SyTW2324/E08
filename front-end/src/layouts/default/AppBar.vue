@@ -1,5 +1,6 @@
 <template>
-  <v-app-bar scroll-behavior="collapse" flat color="red darken-2">
+  <v-app-bar color="red darken-2">
+    <v-icon>mdi-book-open-variant</v-icon>
     <v-app-bar-title class="nav-bar-title">E-Biblio</v-app-bar-title>
     <v-spacer></v-spacer>
     <v-app-bar-nav-icon
@@ -13,7 +14,9 @@
       :key="item.title"
       :to="item.route"
       class="nav-bar-btn hidden-sm-and-down"
+      stacked
     >
+      <v-icon :icon="item.icon"></v-icon>
       {{ item.title }}
     </v-btn>
 
@@ -23,7 +26,9 @@
       :key="item.title"
       :to="item.route"
       class="nav-bar-btn hidden-sm-and-down"
+      stacked
     >
+      <v-icon :icon="item.icon"></v-icon>
       {{ item.title }}
     </v-btn>
 
@@ -31,7 +36,9 @@
       v-if="isAuthenticated()"
       @click="logout()"
       class="nav-bar-btn hidden-sm-and-down"
+      stacked
     >
+      <v-icon icon="mdi-logout"></v-icon>
       Logout
     </v-btn>
   </v-app-bar>
@@ -86,24 +93,29 @@ export default defineComponent({
       {
         title: "Home",
         route: "/home",
+        icon: "mdi-home",
       },
       {
         title: "Log in",
         route: "/login",
+        icon: "mdi-login",
       },
       {
         title: "Sign up",
         route: "/signup",
+        icon: "mdi-account-plus-outline",
       },
     ],
     items_auth: [
       {
         title: "Home",
         route: "/",
+        icon: "mdi-home",
       },
       {
         title: "Profile",
         route: "/profile",
+        icon: "mdi-account-circle-outline",
       },
     ],
   }),
@@ -133,5 +145,9 @@ export default defineComponent({
 }
 .nav-bar-icon {
   color: white;
+}
+
+.logo-pr {
+  width: 100%;
 }
 </style>

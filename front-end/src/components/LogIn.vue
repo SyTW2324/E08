@@ -37,8 +37,14 @@
               color="red"
               class="login_btn"
               type="submit"
-              >Log In</v-btn
             >
+              <v-progress-circular
+                v-if="isLoading"
+                indeterminate
+                color="white"
+              ></v-progress-circular>
+              <span v-else>Log in</span>
+            </v-btn>
           </div>
         </v-form>
       </v-card-text>
@@ -48,6 +54,7 @@
 
 <script setup lang="ts">
 import axios from "axios";
+import { ref } from "vue";
 import { useField, useForm } from "vee-validate";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/store/userStore";
@@ -75,9 +82,15 @@ const password = useField("password");
 
 const router = useRouter();
 
+const isLoading = ref(false);
+
 const submit = handleSubmit(async (values) => {
   const { id, password } = values;
+  isLoading.value = true;
   await loginUser(id, password);
+  setTimeout(() => {}, 1000);
+  router.go(0);
+  router.push("/");
 });
 
 async function loginUser(id: string, password: string) {
@@ -100,10 +113,6 @@ async function loginUser(id: string, password: string) {
       const user = response.data.user;
 
       userStore.setUserInfo(user, token);
-
-      alert("Log In successful");
-      location.reload();
-      router.push("/profile");
     } else {
       console.log(response.data.message);
     }

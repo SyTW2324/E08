@@ -1,6 +1,7 @@
 // Composables
 import { log } from "console";
 import { createRouter, createWebHistory } from "vue-router";
+import { useUserStore } from "@/store/userStore";
 
 const routes = [
   {
@@ -45,15 +46,20 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
-  const publicPages = ["/login", "/", "/signup", "", "/home"];
-  const authRequiered = !publicPages.includes(to.path);
+router.beforeEach(async (to, from, next) => {
+  const publicPages = ["/login", "/", "/signup", "/home"];
+  const authRequired = !publicPages.includes(to.path);
 
   const token = localStorage.getItem("token");
-  if (authRequiered && token == null) {
+
+  const userStore = useUserStore();
+
+  if (authRequired && userStore.checkExpired()) {
+    userStore.clearUserInfo();
     return next("/login");
   }
-  next();
+
+  return next();
 });
 
 export default router;
