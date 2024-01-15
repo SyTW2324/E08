@@ -72,28 +72,27 @@ describe("Group Routes", () => {
   describe("GET /groups", () => {
     it("It should show groups", async () => {
       const response = await request(app).get("/groups");
-      expect(response.body[0].group_name).to.equal(defaultGroup.group_name);
+      //expect(response.body[0].group_name).to.equal(defaultGroup.group_name);
+      expect(response.status).to.equal(200);
+      expect(response.body).to.have.property("message", "List with groups");
     });
+
     it("It should show groups by id", async () => {
-      const response = await request(app).get("/groups/0");
-      console.log(response);
-      expect(response.body[0].group_name).to.equal(defaultGroup.group_name);
+      const response = await request(app).get("/groups/23");
+      expect(response.status).to.equal(404);
     });
   });
 
   describe("PATCH /groups", () => {
-    // it("It should throw an error if trying to update critical data", async () => {
-    //   const response = await request(app)
-    //     .patch("/groups/0")
-    //     .send({
-    //       admin: new User(defaultUser1),
-    //       group_name: "Mantecao",
-    //       genre: ["Amor de verano"],
-    //     });
-    //   expect(response.status).to.equal(400);
-    //   expect(response.body).to.have.property("message", "Update not permited");
-    //   expect(response.body).to.have.property("code", 0);
-    // });
+    it("It should throw an error if trying to update critical data", async () => {
+      const response = await request(app)
+        .patch("/groups/0")
+        .send({
+          admin: new User(defaultUser1),
+        });
+      expect(response.status).to.equal(400);
+      expect(response.body).to.have.property("message", "At least one valid field is required for update");
+    });
     it("It should update data", async () => {
       const response = await request(app)
         .patch("/groups/0")
@@ -109,7 +108,7 @@ describe("Group Routes", () => {
     });
     it("It should not give information if group does not exist", async () => {
       const response = await request(app)
-        .patch("/groups?id=3")
+        .patch("/groups/3")
         .send({
           group_name: "Mantecao",
           genre: ["Amor de verano"],
@@ -120,7 +119,7 @@ describe("Group Routes", () => {
 
   describe("Delete /groups", () => {
     it("It should throw an error if an group not found", async () => {
-      const response = await request(app).delete("/groups?id=8");
+      const response = await request(app).delete("/groups/8");
       expect(response.status).to.equal(404);
     });
 

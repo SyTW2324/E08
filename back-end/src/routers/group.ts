@@ -16,28 +16,36 @@ groupRouter.post("/groups", async (req, res) => {
 });
 
 // READ (GET)
+// groupRouter.get("/groups", async (req, res) => {
+//   try {
+//     const groups = await Group.find();
+//     res.send(groups);
+//   } catch (error) {
+//     res.status(500).send(error);
+//   }
+// });
+
 groupRouter.get("/groups", async (req, res) => {
   try {
-    const groups = await Group.find();
-    res.send(groups);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
+    const filter = req.query.id ? { id: req.query.id } : {};
+    const groups = await Group.find(filter);
 
-groupRouter.get("/groups/:id", async (req, res) => {
-  const id = req.params.id;
+    if (groups && groups.length > 0) {
+      let groupsInfo = groups.map((group) => ({
+        id: group.id,
+        admin: group.admin,
+        group_name: group.group_name,
+        genres: group.genres,
+        members: group.members,
+      }));
 
-  try {
-    const group = await Group.findById(id);
-
-    if (!group) {
-      return res.status(404).send("Group not found");
+      return res.status(200).send({ message: "List with groups", data: groupsInfo });
+    } else {
+      return res.status(404).send({ message: "No groups available" });
     }
-
-    res.send(group);
   } catch (error) {
-    res.status(500).send(error);
+    console.error(error);
+    return res.status(500).send({ message: "Server Error" });
   }
 });
 

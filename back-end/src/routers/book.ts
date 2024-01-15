@@ -84,7 +84,6 @@ bookRouter.post("/books", async (req, res) => {
     await book.save();
     return res.status(201).send({ message: "Successfully added book", book });
   } catch (error) {
-    console.error("Error adding book:", error);
     return res.status(406).send({ message: "Try another book", code: 0 });
   }
 });
