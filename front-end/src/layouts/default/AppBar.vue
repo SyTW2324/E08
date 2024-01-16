@@ -80,12 +80,14 @@
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/store/userStore";
+import router from "@/router";
+import { log } from "util";
 
 const userInfo = useUserStore();
-const router = useRouter();
 
 export default defineComponent({
   data: () => ({
+    router: router,
     drawer: false,
     group: null,
     items_not_auth: [
@@ -139,9 +141,6 @@ export default defineComponent({
       userInfo.clearUserInfo();
       window.location.reload();
       router.push("/");
-    },
-    goto_profile() {
-      router.push("/profile");
     },
   },
 });

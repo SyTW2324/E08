@@ -1,7 +1,13 @@
 import { defineStore } from "pinia";
 import { UserInfo } from "@/interfaces/user";
 import { jwtDecode } from "jwt-decode";
-import { Certificate } from "crypto";
+
+import axios, { AxiosError } from "axios";
+
+interface LogInResponse {
+  code: number;
+  message: string;
+}
 
 interface UserState {
   id: string;
@@ -71,6 +77,66 @@ export const useUserStore = defineStore("user", {
         return true;
       }
       return true;
+    },
+    async logUserIn(id: string, password: string): Promise<LogInResponse> {
+      if (id.length <= 2) {
+        return {
+          code: 1,
+          message: "User Name needs to be at least 2 characters.",
+        };
+      }
+      if (password.length < 4) {
+        return {
+          code: 1,
+          message: "Password needs to be at least 4 characters.",
+        };
+      }
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/login`,
+          {
+            id,
+            password,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        switch (response.status) {
+          case 200:
+            const token = response.data.token;
+            const user = response.data.user;
+
+            this.setUserInfo(user, token);
+            return {
+              code: 0,
+              message: "Logged In",
+            };
+          default:
+            return {
+              code: 1,
+              message: response.data.message
+                ? response.data.message
+                : "Error no identificado",
+            };
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.log;
+          if (error.response?.request.status == 401) {
+            return {
+              code: 1,
+              message: "Credenciales ínvalidos",
+            };
+          }
+        }
+        return {
+          code: 1,
+          message: "Server Error Try Later",
+        };
+      }
     },
   },
 });
