@@ -1,6 +1,25 @@
 <template>
   <v-app class="bg_image">
-    <v-card class="mx-auto mt-5" outlined>
+    <v-card v-if="islogged" class="mx-auto mt-5" outlined>
+      <div class="d-flex flex-column align-center justify-center">
+        <v-img
+          src="@/assets/logo_libro.png"
+          :width="300"
+          contain
+          class="logo_pr"
+        ></v-img>
+
+        <p>R&W</p>
+      </div>
+      <br />
+      <v-card-title class="text-h5">Inicio de sesión exitoso</v-card-title>
+      <br />
+      <v-btn data-cy="continue" color="red" class="login_btn" @click="goHome()">
+        Volver al inicio
+      </v-btn>
+    </v-card>
+
+    <v-card v-else class="mx-auto mt-5" outlined>
       <div class="d-flex flex-column align-center justify-center">
         <v-img
           src="@/assets/logo_libro.png"
@@ -45,32 +64,15 @@
 
         <br />
 
-        <v-alert v-if="missing_info" type="warning" closeable>
+        <v-alert v-if="missing_info" type="warning" closable>
           Usuario y Contraseña obligatorios
         </v-alert>
 
-        <v-alert v-if="show_alert" type="error" closeable>
+        <v-alert v-if="show_alert" type="error" closable>
           {{ alert_message }}
         </v-alert>
       </v-card-text>
     </v-card>
-
-    <v-dialog width="500">
-      <template v-slot:default="logged">
-        <v-card title="Dialog">
-          <v-card-text>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </v-card-text>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-
-            <v-btn text="Close Dialog" @click="router.push('/home')"></v-btn>
-          </v-card-actions>
-        </v-card>
-      </template>
-    </v-dialog>
   </v-app>
 </template>
 
@@ -78,6 +80,9 @@
 import { useUserStore } from "@/store/userStore";
 import router from "@/router";
 import PopUpLogIn from "@/components/PopUpLogIn.vue";
+import { Ref } from "vue";
+const UserStore = useUserStore();
+
 export default {
   data: () => ({
     id: "",
@@ -87,12 +92,16 @@ export default {
     alert_message: "",
     show_alert: false,
     logged: false,
-    router: router,
   }),
+
+  computed: {
+    islogged() {
+      return !UserStore.checkExpired();
+    },
+  },
 
   methods: {
     async LogIn() {
-      const UserStore = useUserStore();
       this.missing_info = false;
       this.isLoading = true;
       this.show_alert = false;
@@ -111,7 +120,11 @@ export default {
       }
       this.isLoading = false;
       this.logged = true;
+      location.reload();
       return;
+    },
+    goHome() {
+      router.push("/home");
     },
   },
   components: {
