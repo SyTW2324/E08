@@ -16,15 +16,15 @@ const LoanSchema = new Schema<LoanDocumentInterface>({
     required: true,
     unique: true,
   },
-  user_id: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: "User",
-  },
   book_id: {
     type: Schema.Types.ObjectId,
     required: true,
     ref: "Book",
+  },
+  user_id: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
   },
   loan_date: {
     type: Date,

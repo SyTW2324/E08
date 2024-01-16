@@ -73,7 +73,7 @@ groupRouter.patch("/groups/:id", async (req, res) => {
     const groups = await Group.find({ id: id });
 
     if (groups.length !== 0) {
-      const updatedBooks: GroupDocumentInterface[] = [];
+      const updatedGroups: GroupDocumentInterface[] = [];
 
       for (let index = 0; index < groups.length; index++) {
         const groupToUpdate = groups[index];
@@ -84,13 +84,13 @@ groupRouter.patch("/groups/:id", async (req, res) => {
         );
 
         if (updatedGroup) {
-          updatedBooks.push(updatedGroup);
+          updatedGroups.push(updatedGroup);
         }
       }
 
       return res.status(200).json({
         message: "Group successfully updated",
-        updatedBooks,
+        updatedGroups,
       });
     }
 
@@ -115,8 +115,8 @@ groupRouter.delete("/groups/:id", async (req, res) => {
     const groups = await Group.find({ id: req.params.id });
     if (groups.length !== 0) {
       for (let i = 0; i < groups.length; i++) {
-        // Deletes an user
-        const deletedUser = await Group.findByIdAndDelete(groups[i]._id);
+        // Deletes an group
+        const deletedGroup= await Group.findByIdAndDelete(groups[i]._id);
       }
       // Sends the result to the client
       return res.status(200).send({
