@@ -1,37 +1,35 @@
 <template>
   <v-container class="text-center fill-height">
     <v-row justify="center">
-      <v-col>
-        <v-card class="mx-auto mt-5 elevation-24 card" outlined>
-          <v-card-title v-if="bookInfo" class="title">
-            Información detallada
-          </v-card-title>
-          <v-img
-            v-if="bookInfo"
-            :src="`${bookInfo.bookcover}`"
-            :id="bookInfo.id"
-            alt="Book Cover"
-            max-width="200"
-            max-height="200"
-            class="d-flex justify-center bookcover"
-            style="margin: auto"
-          ></v-img>
+      <v-card class="mx-auto mt-5 elevation-24 card" outlined>
+        <v-card-title v-if="bookInfo" class="title">
+          Información detallada
+        </v-card-title>
+        <v-img
+          v-if="bookInfo"
+          :src="`${bookInfo.bookcover}`"
+          :id="bookInfo.id"
+          alt="Book Cover"
+          max-width="200"
+          max-height="200"
+          class="d-flex justify-center bookcover"
+          style="margin: auto"
+        ></v-img>
 
-          <v-card-text v-if="bookInfo">
-            <p class="Text_title">Título</p>
-            <p class="text">{{ bookInfo.book_name }}</p>
-            <p class="Text_title">Año de publicación</p>
-            <p class="text">
-              {{ bookInfo.release_year }}
-            </p>
+        <v-card-text v-if="bookInfo">
+          <p class="Text_title">Título</p>
+          <p class="text">{{ bookInfo.book_name }}</p>
+          <p class="Text_title">Año de publicación</p>
+          <p class="text">
+            {{ bookInfo.release_year }}
+          </p>
 
-            <p class="Text_title">Descripción</p>
-            <p class="text">
-              {{ bookInfo.description }}
-            </p>
-          </v-card-text>
-        </v-card>
-      </v-col>
+          <p class="Text_title">Descripción</p>
+          <p class="text">
+            {{ bookInfo.description }}
+          </p>
+        </v-card-text>
+      </v-card>
     </v-row>
   </v-container>
 </template>
@@ -58,7 +56,7 @@ const bookInfo = ref<book_response>();
 const getBookData = async () => {
   try {
     const response = await axios.get(
-      `http://localhost:3002/books?id=${bookId}`,
+      `http://localhost:3002/books?id=${bookId.value}`,
       {
         headers: {
           "Content-Type": "application/json",

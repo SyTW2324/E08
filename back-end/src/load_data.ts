@@ -1,7 +1,9 @@
-import { Book, BookDocumentInterface } from "../models/book.js";
+import { app } from "./app.js";
+import { Book, BookDocumentInterface } from "./models/book.js";
+import request from "supertest";
 
 const book_1984 = {
-  id: 1,
+  id: 11,
   description: "aaa",
   book_name: "1984",
   author: "George Orwell",
@@ -11,10 +13,8 @@ const book_1984 = {
   bookcover: "../src/assets/bookcovers/1984_bookcover.jpg",
 };
 
-await new Book(book_1984).save();
-
 const book_Alicia = {
-  id: 2,
+  id: 12,
   description: "aaa",
   book_name: "Alicia en el País de las Maravillas",
   author: "Lewis Carroll",
@@ -24,10 +24,8 @@ const book_Alicia = {
   bookcover: "../src/assets/bookcovers/Alicia_bookcover.jpg",
 };
 
-await new Book(book_Alicia).save();
-
 const book_AnaFrank = {
-  id: 3,
+  id: 13,
   description: "aaa",
   book_name: "1947",
   author: "Ana Frank",
@@ -37,10 +35,8 @@ const book_AnaFrank = {
   bookcover: "../src/assets/bookcovers/AnaFrank_bookcover.jpg",
 };
 
-await new Book(book_AnaFrank).save();
-
 const book_CodigoDaVinci = {
-  id: 4,
+  id: 14,
   description: "aaa",
   book_name: "El Codigo Da Vinci",
   author: "Dan Brown",
@@ -50,10 +46,8 @@ const book_CodigoDaVinci = {
   bookcover: "../src/assets/bookcovers/CodigoDaVinci_bookcover.jpg",
 };
 
-await new Book(book_CodigoDaVinci).save();
-
 const book_ElPrincipito = {
-  id: 5,
+  id: 15,
   description: "aaa",
   book_name: "El Principito",
   author: "Antoine de Saint-Exupéry",
@@ -63,10 +57,8 @@ const book_ElPrincipito = {
   bookcover: "../src/assets/bookcovers/ElPrincipito_bookcover.jpg",
 };
 
-await new Book(book_ElPrincipito).save();
-
 const book_Hobbit = {
-  id: 6,
+  id: 16,
   description: "aaa",
   book_name: "El Hobbit",
   author: "J.R.R Tolkein",
@@ -76,10 +68,8 @@ const book_Hobbit = {
   bookcover: "../src/assets/bookcovers/Hobbit_bookcover.jpg",
 };
 
-await new Book(book_Hobbit).save();
-
 const book_MobyDick = {
-  id: 7,
+  id: 17,
   description: "aaa",
   book_name: "Moby Dick",
   author: "Herman Melville",
@@ -89,10 +79,8 @@ const book_MobyDick = {
   bookcover: "../src/assets/bookcovers/MobyDick_bookcover.jpeg",
 };
 
-await new Book(book_MobyDick).save();
-
 const book_SombraHueso = {
-  id: 8,
+  id: 18,
   description: "aaa",
   book_name: "Sombra y Hueso",
   author: "Leigh Bardugo",
@@ -102,10 +90,8 @@ const book_SombraHueso = {
   bookcover: "../src/assets/bookcovers/SombraHueso_bookcover.jpg",
 };
 
-await new Book(book_SombraHueso).save();
-
 const book_TodoLoQNuncaFuimos = {
-  id: 9,
+  id: 19,
   description: "aaa",
   book_name: "Todo lo que nunca fuimos",
   author: "Alice Kellen",
@@ -115,4 +101,18 @@ const book_TodoLoQNuncaFuimos = {
   bookcover: "../src/assets/bookcovers/TodoLoQNuncaFuimos_bookcover.jpg",
 };
 
-await new Book(book_TodoLoQNuncaFuimos).save();
+const books = [
+  { ...book_1984 },
+  { ...book_Alicia },
+  { ...book_AnaFrank },
+  { ...book_CodigoDaVinci },
+  { ...book_ElPrincipito },
+  { ...book_Hobbit },
+  { ...book_MobyDick },
+  { ...book_SombraHueso },
+  { ...book_TodoLoQNuncaFuimos },
+];
+
+books.forEach(async (book) => {
+  await request(app).post("/books").send(book);
+});

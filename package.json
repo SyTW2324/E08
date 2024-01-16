@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "coverage": "cd back-end && npm run coverage",
+    "start": "cd back-end && npm run start",
+    "build": "cd back-end && npm run build",
     "test": "npm run test:back-end",
     "test:back-end": "cd back-end && npm run test",
     "test:front-end": "cd front-end && npm run test",
-    "build": "npm run build:back-end && npm run build:front-end",
     "build:back-end": "cd back-end && npm i",
     "build:front-end": "cd back-end && npm i"
   }

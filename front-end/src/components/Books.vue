@@ -1,9 +1,10 @@
 <template>
   <v-container>
-    <h1 class="mt-5">Book Information</h1>
+    <h1 class="mt-5 d-flex justify-center">¡Bienvenidos a la biblioteca!</h1>
+
     <v-row>
-      <v-col v-for="book in bookData" :key="book.id" cols="12">
-        <v-card>
+      <v-col v-for="book in bookData" :key="book.id" cols="12" md="4">
+        <v-card class="text-center elevation-15">
           <v-card-title>Título: {{ book.book_name }}</v-card-title>
           <v-img
             :src="`${book.bookcover}`"
@@ -11,6 +12,7 @@
             alt="Book Cover"
             max-width="200"
             max-height="200"
+            class="mx-auto"
           ></v-img>
 
           <v-card-subtitle
@@ -19,7 +21,7 @@
           <v-card-text>
             <p>Autor: {{ book.author }}</p>
           </v-card-text>
-          <v-card-actions>
+          <v-card-actions class="d-flex justify-center">
             <v-btn
               class="bg-red white--text"
               @click="verMasInformacion(book.id)"
