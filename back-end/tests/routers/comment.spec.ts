@@ -64,6 +64,18 @@ describe("Comment Routes", () => {
         "Comment ID already exists"
       );
     });
+    it("should handle errors (existing comment)", async () => {
+      await request(app).delete("");
+      const response = await request(app).post("/comments").send({
+        author: defaultUser.id,
+        comment: "Test",
+      });
+      expect(response.status).to.equal(500);
+      expect(response.body).to.have.property(
+        "message",
+        "Internal Server Error"
+      );
+    });
   });
 
   describe("GET /comments/:book_referenced", () => {

@@ -26,7 +26,9 @@ commentRouter.post("/comments", async (req, res) => {
         .send({ message: "Successfully added comment", newComment });
     }
   } catch (error) {
-    res.status(500).json({ message: "Internal Server Error", error: error });
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error, body: req.body });
   }
 });
 
