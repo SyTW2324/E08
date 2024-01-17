@@ -203,11 +203,12 @@ export default {
 
 .text {
   font-size: 1.3vw;
+  padding: 1.3vw;
 }
 .Text_title {
   color: red;
   font-size: 1.7vw;
-  border-radius: 1rem;
+  padding: auto;
 }
 
 .bookcover {
@@ -218,6 +219,7 @@ export default {
 }
 
 .title_style {
+  padding: 1.7vw;
   font-size: 2.7vw;
 }
 
