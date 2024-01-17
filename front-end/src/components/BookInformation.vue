@@ -29,14 +29,44 @@
             {{ bookInfo.description }}
           </p>
         </v-card-text>
+        <v-card-actions class="justify-center">
+          <v-btn class="bg-red white--text" @click="postComment"
+            >Añadir comentario</v-btn
+          >
+          <br />
+
+          <form @submit.prevent="postComment">
+            <p class="mx-auto text-red">Introduzca el comentario</p>
+            <v-text-field data-cy="username" v-model="comment"></v-text-field>
+          </form>
+        </v-card-actions>
       </v-card>
     </v-row>
   </v-container>
+  <v-container>
+    <v-row>
+      <v-col v-for="comment in bookComments" :key="comment.id" cols="12" md="4">
+        <v-card class="text-center elevation-15">
+          <v-card-title>Usuario: {{ comment.author }}</v-card-title>
+
+          <v-card-text>
+            <p>{{ comment.comment }}</p>
+          </v-card-text>
+          <v-card-actions class="d-flex justify-center">
+            <v-btn class="bg-red white--text" @click="">Más información</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
-<script setup lang="ts">
+<script lang="ts">
 import axios from "axios";
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useUserStore } from "@/store/userStore";
+const UserStore = useUserStore();
+
 interface book_response {
   id: number;
   description: string;
@@ -47,32 +77,91 @@ interface book_response {
   editorial: string;
   bookcover: string;
 }
-
-const router = useRouter();
 const route = useRoute();
-const bookId = ref();
 const bookInfo = ref<book_response>();
+const bookComments = ref();
 
-const getBookData = async () => {
-  try {
-    const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/books?id=${bookId.value}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
+export default {
+  data() {
+    return {
+      bookId: "",
+      bookInfo,
+      bookComments,
+      userID: UserStore._id,
+      comment: "",
+      warning: false,
+      warning_message: "",
+    };
+  },
+
+  methods: {
+    async postComment() {
+      this.warning = false;
+      this.warning_message = "";
+      if (this.comment.length < 10) {
+        this.warning = true;
+        this.warning_message = "Comentario muy corto";
+        return;
+      } else {
+        const book_id = this.bookId;
+        const coment_content = this.comment;
+        const user_id = this.userID;
+        try {
+          const response = await axios.post(
+            `${import.meta.env.VITE_API_URL}/comments`,
+            {
+              book_id,
+              user_id,
+              coment_content,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (response.status == 201) {
+            location.reload();
+            return;
+          }
+        } catch (error) {
+          this.warning = true;
+          this.warning_message = "Error inesperado";
+          console.log(error);
+          return;
+        }
       }
-    );
-    bookInfo.value = response.data.data[0];
-  } catch (error) {
-    console.error(error);
-  }
-};
+    },
 
-onMounted(() => {
-  bookId.value = route.params.id;
-  getBookData();
-});
+    async fetchBookData() {
+      console.log("Getting books");
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/books?id=${this.bookId}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        this.bookInfo = response.data.data[0];
+      } catch (error) {
+        console.error(error);
+      }
+    },
+  },
+  watch: {
+    "$route.params.id"(newId) {
+      this.bookId = newId;
+      this.fetchBookData();
+    },
+  },
+
+  created() {
+    this.bookId = this.$route.params.id;
+    this.fetchBookData();
+  },
+};
 </script>
 <style scoped>
 .logo_pr {

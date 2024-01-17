@@ -3,22 +3,22 @@ import { BookDocumentInterface } from "./book.js";
 import { UserDocumentInterface } from "./user.js";
 
 export interface CommentDocumentInterface extends Document {
-  comment_id: number;
   book_referenced: BookDocumentInterface["id"];
-  author: UserDocumentInterface;
+  author: UserDocumentInterface["id"];
   comment: string;
 }
 
 const CommentSchema = new Schema<CommentDocumentInterface>({
-  comment_id: {
+  book_referenced: {
     type: Number,
     required: true,
-    unique: true,
+    ref: "Book",
   },
   author: {
-    type: Schema.Types.ObjectId,
+    type: String,
     required: true,
     ref: "User",
+    unique: true,
   },
   comment: {
     type: String,
@@ -28,10 +28,6 @@ const CommentSchema = new Schema<CommentDocumentInterface>({
         throw new Error("Comment must be lower than 300 chars");
       }
     },
-  },
-  book_referenced: {
-    type: Number,
-    required: true,
   },
 });
 

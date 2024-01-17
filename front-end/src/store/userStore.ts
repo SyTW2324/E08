@@ -155,7 +155,7 @@ export const useUserStore = defineStore("user", {
         }
         return {
           code: 1,
-          message: "Server Error Try Later",
+          message: "Date cant be Furute (Server error)",
         };
       }
     },
@@ -185,7 +185,10 @@ export const useUserStore = defineStore("user", {
           message: "La contraseña ha de tener 4 caracteres.",
         };
       }
-      if (new Date() > birth_date) {
+      console.log(new Date());
+      console.log(birth_date);
+      console.log(new Date() < birth_date);
+      if (new Date("2015/1/1") < birth_date) {
         return {
           code: 1,
           message: "Tienes que introducir una fecha válida",

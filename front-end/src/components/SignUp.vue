@@ -14,9 +14,17 @@
       <br />
       <v-card-title class="text-h5">Inicio de sesión exitoso</v-card-title>
       <br />
-      <v-btn data-cy="continue" color="red" class="login_btn" @click="goHome()">
-        Volver al inicio
-      </v-btn>
+      <div class="d-flex justify-center">
+        <v-btn
+          data-cy="continue"
+          color="red"
+          class="login_btn"
+          @click="goHome()"
+        >
+          Volver al inicio
+        </v-btn>
+      </div>
+      <br />
     </v-card>
 
     <v-card v-else class="mx-auto mt-5" outlined>

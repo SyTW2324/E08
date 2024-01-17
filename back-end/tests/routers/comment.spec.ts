@@ -25,9 +25,8 @@ const defaultUser = {
 };
 
 const defaultComment = {
-  comment_id: 0,
   book_referenced: defaultBook.id,
-  author: new User(defaultUser),
+  author: defaultUser.id,
   comment: "Test",
 };
 
@@ -40,14 +39,11 @@ describe("Comment Routes", () => {
   describe("POST /comments", () => {
     it("should register a new comment", async () => {
       await request(app).delete("");
-      const response = await request(app)
-        .post("/comments")
-        .send({
-          comment_id: 1,
-          book_referenced: defaultBook.id,
-          author: new User(defaultUser),
-          comment: "Test",
-        });
+      const response = await request(app).post("/comments").send({
+        book_referenced: defaultBook.id,
+        author: "Samu",
+        comment: "Test",
+      });
       expect(response.status).to.equal(201);
       expect(response.body).to.have.property(
         "message",
@@ -57,18 +53,15 @@ describe("Comment Routes", () => {
 
     it("should handle errors (existing comment)", async () => {
       await request(app).delete("");
-      const response = await request(app)
-        .post("/comments")
-        .send({
-          comment_id: 0,
-          book_referenced: defaultBook.id,
-          author: new User(defaultUser),
-          comment: "Test",
-        });
+      const response = await request(app).post("/comments").send({
+        book_referenced: defaultBook.id,
+        author: defaultUser.id,
+        comment: "Test",
+      });
       expect(response.status).to.equal(400);
       expect(response.body).to.have.property(
         "message",
-        "Comment ID already exists."
+        "Comment ID already exists"
       );
     });
   });
@@ -88,7 +81,7 @@ describe("Comment Routes", () => {
 
   describe("DELETE /comments/:id", () => {
     it("should delete a comment", async () => {
-      const response = await request(app).delete("/comments/0");
+      const response = await request(app).delete("/comments/testo");
 
       expect(response.status).to.equal(200);
       expect(response.body).to.have.property(
