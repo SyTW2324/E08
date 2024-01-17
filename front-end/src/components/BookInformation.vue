@@ -107,6 +107,7 @@ export default {
   data() {
     return {
       userStore: useUserStore(),
+      loggedUserID: "",
       bookId: "",
       hasComment: false,
       bookInfo,
@@ -212,7 +213,7 @@ export default {
             },
           }
         );
-        this.bookComments = response.data.data;
+        location.reload();
       } catch (error) {
         console.error(error);
       }
@@ -221,7 +222,8 @@ export default {
 
   async created() {
     this.bookId = this.$route.params.id as string;
-    this.userStore = useUserStore();
+    this.userStore = await useUserStore();
+    await this.userStore.reloadInfo();
     await this.fetchBookData();
     await this.fetchComments();
     if (bookInfo.value != undefined) {
