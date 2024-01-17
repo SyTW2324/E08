@@ -29,20 +29,25 @@
             {{ bookInfo.description }}
           </p>
         </v-card-text>
-        <v-card-actions class="justify-center">
-          <v-btn class="bg-red white--text" @click="postComment"
-            >Añadir comentario</v-btn
-          >
-          <br />
+      </v-card>
+    </v-row>
 
+    <v-row justify="center">
+      <v-card class="text-center elevation-15">
+        <v-card-title class="title">Añade tu comentario</v-card-title>
+
+        <v-card-text>
           <form @submit.prevent="postComment">
-            <p class="mx-auto text-red">Introduzca el comentario</p>
+            <p class="mx-auto text-red Text_title">Introduzca el comentario</p>
             <v-text-field data-cy="username" v-model="comment"></v-text-field>
           </form>
-        </v-card-actions>
+          <v-btn class="bg-red white--text" @click="postComment">Añadir </v-btn>
+          <br />
+        </v-card-text>
       </v-card>
     </v-row>
   </v-container>
+
   <v-container>
     <v-row>
       <v-col v-for="comment in bookComments" :key="comment.id" cols="12" md="4">
@@ -52,9 +57,6 @@
           <v-card-text>
             <p>{{ comment.comment }}</p>
           </v-card-text>
-          <v-card-actions class="d-flex justify-center">
-            <v-btn class="bg-red white--text" @click="">Más información</v-btn>
-          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
@@ -67,6 +69,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useUserStore } from "@/store/userStore";
 const UserStore = useUserStore();
 
+const userID = UserStore._id;
 interface book_response {
   id: number;
   description: string;
@@ -87,7 +90,7 @@ export default {
       bookId: "",
       bookInfo,
       bookComments,
-      userID: UserStore._id,
+      userID,
       comment: "",
       warning: false,
       warning_message: "",
@@ -106,13 +109,14 @@ export default {
         const book_id = this.bookId;
         const coment_content = this.comment;
         const user_id = this.userID;
+
         try {
           const response = await axios.post(
             `${import.meta.env.VITE_API_URL}/comments`,
             {
-              book_id,
-              user_id,
-              coment_content,
+              book_referenced: book_id,
+              author: user_id,
+              comment: coment_content,
             },
             {
               headers: {
@@ -134,7 +138,6 @@ export default {
     },
 
     async fetchBookData() {
-      console.log("Getting books");
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_API_URL}/books?id=${this.bookId}`,
@@ -149,17 +152,29 @@ export default {
         console.error(error);
       }
     },
-  },
-  watch: {
-    "$route.params.id"(newId) {
-      this.bookId = newId;
-      this.fetchBookData();
+
+    async fetchComments() {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/comments/${this.bookId}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        this.bookComments = response.data.data;
+      } catch (error) {
+        this.bookComments = undefined;
+        console.error(error);
+      }
     },
   },
 
   created() {
     this.bookId = this.$route.params.id;
     this.fetchBookData();
+    this.fetchComments();
   },
 };
 </script>
