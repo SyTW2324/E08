@@ -40,8 +40,8 @@ describe("Comment Routes", () => {
     it("should register a new comment", async () => {
       await request(app).delete("");
       const response = await request(app).post("/comments").send({
-        book_referenced: defaultBook.id,
-        author: "Samu",
+        book_referenced: 12,
+        author: "defaultUser.id",
         comment: "Test",
       });
       expect(response.status).to.equal(201);

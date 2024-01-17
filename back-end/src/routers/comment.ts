@@ -3,17 +3,35 @@ import { Comment } from "../models/comment.js";
 
 export const commentRouter = express.Router();
 
+
 commentRouter.post("/comments", async (req, res) => {
   try {
-    const newcomment = new Comment(req.body);
-    await newcomment.save();
-    return res
-      .status(201)
-      .send({ message: "Successfully added comment", newcomment });
+    const {book_referenced, author, comment} = new Comment(req.body);
+    const isCommentedBefore = await Comment.exists({
+      book_referenced: book_referenced,
+      author: author,
+    });
+    
+    if (isCommentedBefore !== null) {
+      return res
+      .status(400)
+      .json({ message: "Comment ID already exists"});
+    } else {
+      const newComment = new Comment({
+        book_referenced: book_referenced,
+        author: author,
+        comment: comment,
+      });
+    
+      await newComment.save();
+      return res
+        .status(201)
+        .send({ message: "Successfully added comment", newComment });
+    }
   } catch (error) {
     res
-      .status(400)
-      .json({ message: "Comment ID already exists", error: error });
+      .status(500)
+      .json({ message: "Internal Server Error"});
   }
 });
 
