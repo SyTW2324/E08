@@ -62,25 +62,32 @@ commentRouter.get("/comments/:book_id", async (req, res) => {
   }
 });
 
-commentRouter.delete("/comments/:id", async (req, res) => {
+commentRouter.delete("/comments/:id/:book_referenced", async (req, res) => {
   try {
-    if (!req.params.id) {
+    if (!req.params.id || !req.params.book_referenced) {
       return res.status(400).send({
-        message: "A id must be provided",
+        message: "Both id and book_referenced must be provided",
         code: 0,
       });
     }
-    const comments = await Comment.find({ author: req.params.id });
+    const comments = await Comment.find({
+      author: req.params.id,
+      book_referenced: req.params.book_referenced,
+    });
+
     if (comments.length !== 0) {
       for (let i = 0; i < comments.length; i++) {
-        // Deletes an book
+        // Deletes a comment
         const deletedComment = await Comment.findByIdAndDelete(comments[i]._id);
       }
+
       // Sends the result to the client
       return res.status(200).send({
         message: "Comment successfully deleted",
+        code: 0,
       });
     }
+
     return res.status(404).send({ message: "Comment not found" });
   } catch (error) {
     return res.status(500).send({ message: "Internal Server Error" });
