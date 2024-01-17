@@ -11,7 +11,9 @@ commentRouter.post("/comments", async (req, res) => {
       .status(201)
       .send({ message: "Successfully added comment", newcomment });
   } catch (error) {
-    res.status(400).json({ message: "Comment ID already exists" });
+    res
+      .status(400)
+      .json({ message: "Comment ID already exists", error: error });
   }
 });
 
