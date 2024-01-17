@@ -30,7 +30,9 @@ loanRouter.get("/loans", async (req, res) => {
         return_date: loan.return_date,
       }));
 
-      return res.status(200).send({ message: "List with loans", data: loansInfo });
+      return res
+        .status(200)
+        .send({ message: "List with loans", data: loansInfo });
     } else {
       return res.status(404).send({ message: "No loans available" });
     }
@@ -50,7 +52,7 @@ loanRouter.patch("/loans/:id", async (req, res) => {
       });
     }
     const id = req.params.id;
-    const allowedUpdates = ["group_name", "genres", "members"];
+    const allowedUpdates = ["return_date"];
     const updates = Object.keys(req.body);
     const isValidOperation = updates.some((update) =>
       allowedUpdates.includes(update)
@@ -69,13 +71,13 @@ loanRouter.patch("/loans/:id", async (req, res) => {
       for (let index = 0; index < loans.length; index++) {
         const loanToUpdate = loans[index];
         const updatedLoan = await Loan.findByIdAndUpdate(
-            loanToUpdate._id,
+          loanToUpdate._id,
           { ...req.body },
           { new: true, runValidators: true }
         );
 
         if (updatedLoan) {
-            updatedLoans.push(updatedLoan);
+          updatedLoans.push(updatedLoan);
         }
       }
 

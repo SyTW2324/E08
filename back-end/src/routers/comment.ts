@@ -5,26 +5,15 @@ export const commentRouter = express.Router();
 
 commentRouter.post("/comments", async (req, res) => {
   try {
-    const { comment_id, book_referenced, author, comment } = req.body;
-
-    const existingComment = await Comment.findOne({ comment_id });
-    if (existingComment) {
-      return res.status(400).json({ message: "Comment ID already exists." });
-    }
-
-    const newcomment = new Comment({
-      comment_id,
-      book_referenced,
-      author,
-      comment,
-    });
-
+    const newcomment = new Comment(req.body);
     await newcomment.save();
     return res
       .status(201)
       .send({ message: "Successfully added comment", newcomment });
   } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
+    res
+      .status(400)
+      .json({ message: "Comment ID already exists", error: error });
   }
 });
 
@@ -45,7 +34,6 @@ commentRouter.get("/comments/:book_id", async (req, res) => {
 
     // Maps comments to specified format
     const comments_info = comments.map((comment) => ({
-      comment_id: comment.comment_id,
       author: comment.author,
       comment: comment.comment,
     }));
@@ -67,7 +55,7 @@ commentRouter.delete("/comments/:id", async (req, res) => {
         code: 0,
       });
     }
-    const comments = await Comment.find({ comment_id: req.params.id });
+    const comments = await Comment.find({ author: req.params.id });
     if (comments.length !== 0) {
       for (let i = 0; i < comments.length; i++) {
         // Deletes an book

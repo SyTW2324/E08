@@ -8,7 +8,7 @@
       @click.stop="drawer = !drawer"
     ></v-app-bar-nav-icon>
     <v-btn
-      v-if="!isAuthenticated()"
+      v-if="!userIsLogged"
       v-for="item in items_not_auth"
       :key="item.title"
       :to="item.route"
@@ -20,7 +20,7 @@
     </v-btn>
 
     <v-btn
-      v-if="isAuthenticated()"
+      v-if="userIsLogged"
       v-for="item in items_auth"
       :key="item.title"
       :to="item.route"
@@ -32,8 +32,8 @@
     </v-btn>
 
     <v-btn
-      v-if="isAuthenticated()"
-      @click="logout()"
+      v-if="userIsLogged"
+      @click="logOut()"
       class="nav-bar-btn hidden-sm-and-down"
       stacked
     >
@@ -45,7 +45,7 @@
     v-model="drawer"
     location="left"
     temporary
-    v-if="!isAuthenticated()"
+    v-if="!userIsLogged"
   >
     <v-list>
       <v-list-item
@@ -61,7 +61,7 @@
     v-model="drawer"
     location="left"
     temporary
-    v-if="isAuthenticated()"
+    v-if="userIsLogged"
   >
     <v-list>
       <v-list-item
@@ -71,22 +71,21 @@
       >
         <v-list-item-title>{{ item.title }}</v-list-item-title>
       </v-list-item>
-      <v-list-item key="logout" @click="logout()">Logout</v-list-item>
+      <v-list-item key="logout" @click="logOut()">Logout</v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useRouter } from "vue-router";
 import { useUserStore } from "@/store/userStore";
 import router from "@/router";
-import { log } from "util";
 
-const userInfo = useUserStore();
+const UserStore = useUserStore();
 
 export default defineComponent({
   data: () => ({
+    UserStore: UserStore,
     router: router,
     drawer: false,
     group: null,
@@ -131,16 +130,17 @@ export default defineComponent({
       },
     ],
   }),
-  methods: {
-    isAuthenticated() {
-      const token = localStorage.getItem("token");
-      if (token != null) return true;
-      return false;
+
+  computed: {
+    userIsLogged() {
+      return !this.UserStore.checkExpired();
     },
-    logout() {
-      userInfo.clearUserInfo();
-      window.location.reload();
-      router.push("/");
+  },
+
+  methods: {
+    logOut() {
+      UserStore.clearUserInfo();
+      location.reload();
     },
   },
 });
