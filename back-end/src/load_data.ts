@@ -4,7 +4,7 @@ import request from "supertest";
 
 const book_1984 = {
   id: 11,
-  description: "aaa",
+  description: "1984 es la antiutopía o distopía más célebre de todas cuantas fueron escritas durante la primera mitad del siglo XX. En ella, Orwell presenta un futuro en el que una dictadura totalitaria interfiere hasta tal punto en la vida privada de los ciudadanos que resulta imposible escapar a su control.",
   book_name: "1984",
   author: "George Orwell",
   genres: [" a ", " a "],
