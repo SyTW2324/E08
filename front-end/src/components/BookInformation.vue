@@ -172,7 +172,7 @@ export default {
   },
 
   created() {
-    this.bookId = this.$route.params.id;
+    this.bookId = this.$route.params.id as string;
     this.fetchBookData();
     this.fetchComments();
   },
